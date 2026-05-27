@@ -57,7 +57,7 @@ export default function AdminPage() {
   });
 
   const [aiForm, setAiForm] = useState<Record<string, { apiKey: string; endpoint: string; enabled: boolean }>>({});
-  const [hasAiKey, setHasAiKey] = useState<Record<string, boolean>>({});
+  const [showKey, setShowKey] = useState<Record<string, boolean>>({});
 
   const fetchUsers = async () => {
     try {
@@ -75,17 +75,17 @@ export default function AdminPage() {
       if (data.success) {
         setAiProviders(data.data);
         const map: Record<string, { apiKey: string; endpoint: string; enabled: boolean }> = {};
-        const keyStatus: Record<string, boolean> = {};
         for (const p of data.data) {
-          map[p.provider] = { apiKey: '', endpoint: p.endpoint, enabled: p.enabled };
-          keyStatus[p.provider] = !!p.apiKey;
+          map[p.provider] = { apiKey: p.apiKey || '', endpoint: p.endpoint, enabled: p.enabled };
         }
         for (const p of AI_PROVIDERS) {
           if (!map[p]) map[p] = { apiKey: '', endpoint: AI_ENDPOINTS[p], enabled: false };
-          if (!(p in keyStatus)) keyStatus[p] = false;
         }
         setAiForm(map);
-        setHasAiKey(keyStatus);
+        // auto-test providers that have a key
+        for (const p of data.data) {
+          if (p.apiKey) testAi(p.provider, true);
+        }
       }
     } catch { toast('Failed to load AI settings', 'error'); }
   };
@@ -145,9 +145,6 @@ export default function AdminPage() {
       const data = await res.json();
       if (data.success) {
         toast(`${AI_LABELS[provider]} settings saved.`, 'success');
-        if (aiForm[provider]?.apiKey) {
-          setHasAiKey(h => ({ ...h, [provider]: true }));
-        }
         fetchAi();
       } else {
         toast(data.error || 'Failed', 'error');
@@ -155,9 +152,9 @@ export default function AdminPage() {
     } catch { toast('Failed to save AI settings', 'error'); }
   };
 
-  const testAi = async (provider: string) => {
-    setAiTesting(provider);
-    setAiResults(r => ({ ...r, [provider]: 'Testing...' }));
+  const testAi = async (provider: string, silent = false) => {
+    if (!silent) setAiTesting(provider);
+    if (!silent) setAiResults(r => ({ ...r, [provider]: 'Testing...' }));
     try {
       const res = await fetch('/api/ai/test', {
         method: 'POST',
@@ -166,13 +163,13 @@ export default function AdminPage() {
       });
       const data = await res.json();
       const msg = data.data || 'Failed';
-      setAiResults(r => ({ ...r, [provider]: msg }));
+      if (!silent) setAiResults(r => ({ ...r, [provider]: msg }));
       setAiConnected(c => ({ ...c, [provider]: msg.startsWith('Connected') }));
     } catch {
-      setAiResults(r => ({ ...r, [provider]: 'Request failed' }));
+      if (!silent) setAiResults(r => ({ ...r, [provider]: 'Request failed' }));
       setAiConnected(c => ({ ...c, [provider]: false }));
     } finally {
-      setAiTesting(null);
+      if (!silent) setAiTesting(null);
     }
   };
 
@@ -315,9 +312,14 @@ export default function AdminPage() {
                 <div className="form-group" style={{ flex: 3 }}>
                   <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                     API key
-                    {hasAiKey[provider] && <span className="badge badge-appr" style={{ fontSize: 9 }}>Key set</span>}
+                    {aiForm[provider]?.apiKey && <span className="badge badge-appr" style={{ fontSize: 9 }}>Saved</span>}
                   </label>
-                  <input className="form-input" type="password" placeholder={hasAiKey[provider] ? "Leave blank to keep existing key" : "Enter API key..."} value={aiForm[provider]?.apiKey || ''} onChange={e => setAiForm(f => ({ ...f, [provider]: { ...f[provider], apiKey: e.target.value } }))} />
+                  <div style={{ display: 'flex', gap: 4 }}>
+                    <input className="form-input" type={showKey[provider] ? 'text' : 'password'} placeholder="Enter API key..." value={aiForm[provider]?.apiKey || ''} onChange={e => setAiForm(f => ({ ...f, [provider]: { ...f[provider], apiKey: e.target.value } }))} style={{ flex: 1 }} />
+                    <button className="btn btn-sm" onClick={() => setShowKey(s => ({ ...s, [provider]: !s[provider] }))} title={showKey[provider] ? 'Hide' : 'Show'} style={{ flexShrink: 0 }}>
+                      <i className={'ti ti-' + (showKey[provider] ? 'eye-off' : 'eye')}></i>
+                    </button>
+                  </div>
                 </div>
                 <div className="form-group" style={{ flex: 2 }}>
                   <label className="form-label">Custom endpoint (optional)</label>

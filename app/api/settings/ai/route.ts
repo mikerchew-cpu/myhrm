@@ -7,11 +7,7 @@ const PROVIDERS = ["deepseek", "gemini", "claude"] as const;
 export async function GET() {
   try {
     const providers = await prisma.aiProvider.findMany({ orderBy: { createdAt: "asc" } });
-    const masked = providers.map(p => ({
-      ...p,
-      apiKey: p.apiKey ? p.apiKey.slice(0, 8) + "..." + p.apiKey.slice(-4) : "",
-    }));
-    return NextResponse.json({ success: true, data: masked } satisfies ApiResponse);
+    return NextResponse.json({ success: true, data: providers } satisfies ApiResponse);
   } catch (error) {
     console.error("GET /api/settings/ai error:", error);
     return NextResponse.json({ success: false, error: "Failed to fetch AI settings" }, { status: 500 });
@@ -41,7 +37,7 @@ export async function PUT(req: NextRequest) {
     });
     return NextResponse.json({
       success: true,
-      data: { ...record, apiKey: record.apiKey ? record.apiKey.slice(0, 8) + "..." + record.apiKey.slice(-4) : "" },
+      data: record,
       message: `${body.provider} settings saved`,
     } satisfies ApiResponse);
   } catch (error) {

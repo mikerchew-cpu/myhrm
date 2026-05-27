@@ -70,6 +70,7 @@ const sections: { label: string; items: { label: string; href: string; icon: str
     label: 'System',
     items: [
       { label: 'Admin', href: '/admin', icon: 'user-shield' },
+      { label: 'User Manual', href: '/user-manual', icon: 'book-2' },
     ],
   },
 ];

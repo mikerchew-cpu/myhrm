@@ -39,7 +39,7 @@ export default function DashboardPage() {
         </div>
         <div className="metric">
           <div className="metric-lbl"><i className="ti ti-calendar-off" aria-hidden="true"></i> Leave requests</div>
-          <div className="metric-val" style={{ color: 'var(--blue)' }}>{stats.pendingLeave}</div>
+          <div className="metric-val" style={{ color: 'var(--tiffany)' }}>{stats.pendingLeave}</div>
           <div className="metric-sub">{stats.leaveTypes.annual} annual · {stats.leaveTypes.mc} MC</div>
         </div>
         <div className="metric">
@@ -56,7 +56,7 @@ export default function DashboardPage() {
             <Link href="/claims" className="card-link">View all <i className="ti ti-arrow-right" aria-hidden="true"></i></Link>
           </div>
           <p style={{ color: 'var(--muted)', fontSize: 13, textAlign: 'center', padding: 20 }}>
-            Visit the <Link href="/claims" style={{ color: 'var(--blue)' }}>Claims page</Link> to manage claims.
+            Visit the <Link href="/claims" style={{ color: 'var(--tiffany)' }}>Claims page</Link> to manage claims.
           </p>
         </div>
         <div className="card">
@@ -65,7 +65,7 @@ export default function DashboardPage() {
             <Link href="/leave" className="card-link">Manage <i className="ti ti-arrow-right" aria-hidden="true"></i></Link>
           </div>
           <p style={{ color: 'var(--muted)', fontSize: 13, textAlign: 'center', padding: 20 }}>
-            Visit the <Link href="/leave" style={{ color: 'var(--blue)' }}>Leave page</Link> to manage leave requests.
+            Visit the <Link href="/leave" style={{ color: 'var(--tiffany)' }}>Leave page</Link> to manage leave requests.
           </p>
         </div>
       </div>
@@ -78,7 +78,7 @@ export default function DashboardPage() {
           <div className="ot-row"><span>Public holiday (×3.0)</span><span style={{ fontWeight: 600 }}>40 hrs</span></div>
           <div className="ot-row" style={{ borderTop: '1px solid var(--border)', marginTop: 4, paddingTop: 8 }}>
             <span style={{ fontWeight: 600 }}>Total payable</span>
-            <span style={{ fontWeight: 700, color: 'var(--blue)' }}>RM {stats.otAccrued.toLocaleString()}</span>
+            <span style={{ fontWeight: 700, color: 'var(--tiffany)' }}>RM {stats.otAccrued.toLocaleString()}</span>
           </div>
         </div>
         <div className="card">
@@ -88,11 +88,11 @@ export default function DashboardPage() {
               <span style={{ color: 'var(--muted)' }}>{stats.mileageKm.toLocaleString()} km claimed</span>
               <span style={{ fontWeight: 600 }}>RM {stats.mileageValue.toLocaleString()}</span>
             </div>
-            <div className="prog-bar"><div className="prog-fill" style={{ width: '71%', background: 'var(--blue)' }}></div></div>
+            <div className="prog-bar"><div className="prog-fill" style={{ width: '71%', background: 'var(--tiffany)' }}></div></div>
           </div>
           <div className="ot-row">
             <span style={{ fontWeight: 600 }}>Total mileage claim</span>
-            <span style={{ fontWeight: 700, color: 'var(--blue)' }}>RM {stats.mileageValue.toLocaleString()}</span>
+            <span style={{ fontWeight: 700, color: 'var(--tiffany)' }}>RM {stats.mileageValue.toLocaleString()}</span>
           </div>
         </div>
         <div className="card">
@@ -110,8 +110,8 @@ export default function DashboardPage() {
 
       <div className="card">
         <div className="card-hdr">
-          <span className="card-title" style={{ color: 'var(--teal)' }}><i className="ti ti-brain" aria-hidden="true"></i> DeepSeek AI insights</span>
-          <span className="badge badge-te">Live</span>
+          <span className="card-title" style={{ color: 'var(--tiffany)' }}><i className="ti ti-brain" aria-hidden="true"></i> AI Insights</span>
+          <span className="badge badge-info">Live</span>
         </div>
         <div className="ai-chips">
           <span className="ai-chip"><i className="ti ti-chart-bar" aria-hidden="true"></i> Analyse OT trends</span>

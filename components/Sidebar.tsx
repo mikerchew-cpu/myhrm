@@ -41,6 +41,13 @@ const sections: { label: string; items: { label: string; href: string; icon: str
       { label: 'Talent Matrix', href: '/talent', icon: 'star' },
       { label: 'Foreign Workers', href: '/foreign', icon: 'world' },
       { label: 'Levy Calculator', href: '/levy', icon: 'calculator' },
+      { label: 'Ask AI', href: '/ask-ai', icon: 'message-chatbot' },
+    ],
+  },
+  {
+    label: 'System',
+    items: [
+      { label: 'Admin', href: '/admin', icon: 'user-shield' },
     ],
   },
 ];
@@ -58,8 +65,8 @@ export default function Sidebar() {
       <div className="sb-brand">
         <div className="sb-logo"><i className="ti ti-building-skyscraper" aria-hidden="true"></i></div>
         <div>
-          <div className="sb-name">MyHRM Pro</div>
-          <div className="sb-sub">Malaysia Edition 2026</div>
+          <div className="sb-name">MyHRM</div>
+          <div className="sb-sub">Malaysia Edition</div>
         </div>
       </div>
 

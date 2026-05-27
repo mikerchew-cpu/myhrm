@@ -1,0 +1,203 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String   @id @default(cuid())
+  username       String   @unique
+  email          String   @unique
+  givenName      String
+  surname        String
+  role           String   @default("Viewer")
+  department     String   @default("")
+  hierarchyLevel Int      @default(1)
+  approvalLevel  Int      @default(1)
+  status         String   @default("Active")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model AiProvider {
+  id        String   @id @default(cuid())
+  provider  String   @unique
+  apiKey    String   @default("")
+  endpoint  String   @default("")
+  enabled   Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Employee {
+  id             String          @id @default(cuid())
+  employeeId     String          @unique
+  name           String
+  role           String
+  department     String
+  employmentType String
+  status         String          @default("Active")
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  claims         Claim[]
+  leaveRequests  LeaveRequest[]
+  overtimeLogs   OvertimeLog[]
+  attendance     Attendance[]
+  mileageRecords MileageRecord[]
+  performance    Performance?
+  foreignWorker  ForeignWorker?
+  approvals      Approval[]
+  payrollRecords PayrollRecord[]
+}
+
+model Claim {
+  id          String   @id @default(cuid())
+  employeeId  String
+  employee    Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  type        String
+  date        DateTime
+  fromLocation String  @default("")
+  toLocation  String   @default("")
+  distance    Float    @default(0)
+  rate        Float    @default(0.6)
+  amount      Float    @default(0)
+  receipt     String   @default("")
+  remarks     String   @default("")
+  status      String   @default("Pending")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model LeaveRequest {
+  id        String   @id @default(cuid())
+  employeeId String
+  employee  Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  type      String
+  halfDay   String   @default("Full day")
+  startDate DateTime
+  endDate   DateTime
+  reason    String   @default("")
+  mcFile    String   @default("")
+  status    String   @default("Pending")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model OvertimeLog {
+  id         String   @id @default(cuid())
+  employeeId String
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  date       DateTime
+  hours      Float    @default(0)
+  dayType    String   @default("Normal workday")
+  multiplier Float    @default(1.5)
+  rate       Float    @default(0)
+  amount     Float    @default(0)
+  status     String   @default("Pending")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Attendance {
+  id         String   @id @default(cuid())
+  employeeId String
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  date       DateTime
+  clockIn    String   @default("")
+  clockOut   String   @default("")
+  status     String   @default("Present")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model MileageRecord {
+  id          String   @id @default(cuid())
+  employeeId  String
+  employee    Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  date        DateTime
+  fromLocation String  @default("")
+  toLocation  String   @default("")
+  distance    Float    @default(0)
+  amount      Float    @default(0)
+  status      String   @default("Pending")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Approval {
+  id          String   @id @default(cuid())
+  employeeId  String
+  employee    Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  type        String
+  referenceId String
+  level       Int      @default(1)
+  status      String   @default("Pending")
+  comment     String   @default("")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Performance {
+  id         String   @id @default(cuid())
+  employeeId String   @unique
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  score      Int      @default(0)
+  quarter    String   @default("Q2")
+  year       Int      @default(2026)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model ForeignWorker {
+  id            String   @id @default(cuid())
+  employeeId    String   @unique
+  employee      Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  nationality   String
+  permitType    String
+  permitExpiry  DateTime?
+  levyPaid      Boolean  @default(false)
+  fomemaStatus  String   @default("Pending")
+  securityBond  Float    @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model LevyRecord {
+  id         String   @id @default(cuid())
+  sector     String
+  nationality String
+  workerCount Int     @default(1)
+  levyRate   Float    @default(1850)
+  totalCost  Float    @default(0)
+  createdAt  DateTime @default(now())
+}
+
+model Skill {
+  id         String   @id @default(cuid())
+  title      String
+  department String   @default("")
+  content    String   @default("")
+  filename   String   @default("")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model PayrollRecord {
+  id         String   @id @default(cuid())
+  employeeId String
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  month      Int
+  year       Int
+  gross      Float    @default(0)
+  epf        Float    @default(0)
+  socso      Float    @default(0)
+  eis        Float    @default(0)
+  net        Float    @default(0)
+  status     String   @default("Draft")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}

@@ -73,7 +73,7 @@ export default function EmployeesPage() {
   return (
     <>
       <div className="callout callout-blue mb14">
-        <i className="ti ti-info-circle" aria-hidden="true"></i> Employee directory — data stored in SQLite database.
+        <i className="ti ti-info-circle" aria-hidden="true"></i> Employee directory — managed in PostgreSQL via Prisma ORM.
       </div>
       <div className="g2">
         <div className="card">
@@ -96,7 +96,7 @@ export default function EmployeesPage() {
           <div className="card-hdr"><span className="card-title"><i className="ti ti-filter" aria-hidden="true"></i> Search & filter</span></div>
           <div className="form-group" style={{ marginBottom: 10 }}><label className="form-label">Search</label><input className="form-input" placeholder="Name, ID, role..." value={search} onChange={e => setSearch(e.target.value)} /></div>
           <div className="form-group"><label className="form-label">Department</label><select className="form-input" value={dept} onChange={e => setDept(e.target.value)}><option value="All">All departments</option><option>HR</option><option>Field Services</option><option>Tech Support</option><option>Finance</option><option>Sales</option><option>Admin</option></select></div>
-          <div className="callout callout-teal" style={{ marginTop: 12, marginBottom: 0 }}><i className="ti ti-database"></i> Data persisted in SQLite database via Prisma ORM.</div>
+          <div className="callout callout-teal" style={{ marginTop: 12, marginBottom: 0 }}><i className="ti ti-database"></i> Data persisted in Supabase PostgreSQL via Prisma ORM.</div>
         </div>
       </div>
       <div className="card" style={{ marginTop: 14 }}>

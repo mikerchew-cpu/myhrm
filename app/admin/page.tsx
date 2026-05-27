@@ -48,6 +48,7 @@ export default function AdminPage() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [aiTesting, setAiTesting] = useState<string | null>(null);
   const [aiResults, setAiResults] = useState<Record<string, string>>({});
+  const [aiConnected, setAiConnected] = useState<Record<string, boolean | null>>({});
   const { toast } = useToast();
 
   const [form, setForm] = useState({
@@ -164,9 +165,12 @@ export default function AdminPage() {
         body: JSON.stringify({ provider, apiKey: aiForm[provider]?.apiKey || '', endpoint: aiForm[provider]?.endpoint || '' }),
       });
       const data = await res.json();
-      setAiResults(r => ({ ...r, [provider]: data.data || 'Failed' }));
+      const msg = data.data || 'Failed';
+      setAiResults(r => ({ ...r, [provider]: msg }));
+      setAiConnected(c => ({ ...c, [provider]: msg.startsWith('Connected') }));
     } catch {
       setAiResults(r => ({ ...r, [provider]: 'Request failed' }));
+      setAiConnected(c => ({ ...c, [provider]: false }));
     } finally {
       setAiTesting(null);
     }
@@ -285,7 +289,21 @@ export default function AdminPage() {
               <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
                 <i className={'ti ti-' + AI_ICONS[provider]} style={{ fontSize: 24, color: 'var(--purple)' }}></i>
                 <div style={{ flex: 1 }}>
-                  <div style={{ fontWeight: 600, fontSize: 15 }}>{AI_LABELS[provider]}</div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <span style={{ fontWeight: 600, fontSize: 15 }}>{AI_LABELS[provider]}</span>
+                    {aiConnected[provider] === true && (
+                      <span style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 11, color: 'var(--green)' }}>
+                        <span style={{ width: 7, height: 7, borderRadius: '50%', background: 'var(--green)', display: 'inline-block' }}></span>
+                        Connected
+                      </span>
+                    )}
+                    {aiConnected[provider] === false && (
+                      <span style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 11, color: 'var(--muted)' }}>
+                        <span style={{ width: 7, height: 7, borderRadius: '50%', background: 'var(--gray-400)', display: 'inline-block' }}></span>
+                        Not connected
+                      </span>
+                    )}
+                  </div>
                   <div style={{ fontSize: 12, color: 'var(--muted)' }}>{AI_ENDPOINTS[provider]}</div>
                 </div>
                 <label className="switch" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>

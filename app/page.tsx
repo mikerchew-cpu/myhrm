@@ -7,6 +7,32 @@ import AiInsight from '@/components/AiInsight';
 
 const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
+function FaultAlertBanner() {
+  const [faults, setFaults] = useState<{ critical: number; warnings: number; healthScore: number } | null>(null);
+
+  useEffect(() => {
+    fetch('/api/ai/fault-detect')
+      .then(r => r.json())
+      .then(res => { if (res.success) setFaults(res.data); })
+      .catch(() => {});
+  }, []);
+
+  if (!faults || (faults.critical === 0 && faults.warnings === 0)) return null;
+
+  return (
+    <Link href="/fault-detect" style={{ textDecoration: 'none' }}>
+      <div className="callout callout-red" style={{ marginBottom: 16, cursor: 'pointer' }}>
+        <i className="ti ti-shield-search"></i>
+        <strong>Fault Detection:</strong>
+        {faults.critical > 0 && <> {faults.critical} critical ·</>}
+        {faults.warnings > 0 && <> {faults.warnings} warnings ·</>}
+        Health score: {faults.healthScore}/100 — Click to investigate
+        <i className="ti ti-arrow-right" style={{ marginLeft: 'auto' }}></i>
+      </div>
+    </Link>
+  );
+}
+
 export default function DashboardPage() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
@@ -27,6 +53,9 @@ export default function DashboardPage() {
 
   return (
     <>
+      {/* Fault Detection Alert */}
+      <FaultAlertBanner />
+
       {/* Alert bar */}
       {stats.fwExpiringSoon > 0 || stats.pendingClaims > 0 || stats.documentsExpiringSoon > 0 ? (
         <div className="callout callout-amber" style={{ marginBottom: 16 }}>

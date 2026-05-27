@@ -183,6 +183,7 @@ select.form-input{appearance:none;background-image:url("data:image/svg+xml,%3Csv
 .callout-green{background:var(--green-lt);color:var(--green);border-left:3px solid var(--green-mid);}
 .callout-teal{background:var(--teal-lt);color:var(--teal);border-left:3px solid var(--teal);}
 .callout-purple{background:var(--purple-lt);color:var(--purple);border-left:3px solid var(--purple);}
+.callout-red{background:var(--red-lt);color:var(--red);border-left:3px solid var(--red);}
 
 .divider{height:1px;background:var(--border);margin:12px 0;}
 

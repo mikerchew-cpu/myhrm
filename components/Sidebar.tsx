@@ -63,7 +63,13 @@ const sections: { label: string; items: { label: string; href: string; icon: str
       { label: 'Talent Matrix', href: '/talent', icon: 'star' },
       { label: 'Foreign Workers', href: '/foreign', icon: 'world' },
       { label: 'Levy Calculator', href: '/levy', icon: 'calculator' },
+    ],
+  },
+  {
+    label: 'AI Intelligence',
+    items: [
       { label: 'Ask AI', href: '/ask-ai', icon: 'message-chatbot' },
+      { label: 'Fault Detection', href: '/fault-detect', icon: 'shield-search' },
     ],
   },
   {

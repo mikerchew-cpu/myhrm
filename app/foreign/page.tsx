@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import AiInsight from '@/components/AiInsight';
 
 interface FW {
   id: string;
@@ -34,6 +35,7 @@ export default function ForeignPage() {
 
   return (
     <>
+      <div style={{ marginBottom: 16 }}><AiInsight title="Foreign Worker Compliance" prompt="Analyse foreign worker data - visa statuses, levy amounts, expiring permits. Provide compliance recommendations." icon="world" /></div>
       <div className="callout callout-amber mb14">
         <i className="ti ti-alert-triangle" aria-hidden="true"></i>
         <strong>2026 policy update:</strong> New EP salary thresholds from 1 Jun 2026.

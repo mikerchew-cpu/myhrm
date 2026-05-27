@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import AiInsight from '@/components/AiInsight';
 
 interface AttRecord {
   id: string;
@@ -31,6 +32,9 @@ export default function AttendancePage() {
     <>
       <div className="callout callout-blue mb14">
         <i className="ti ti-fingerprint" aria-hidden="true"></i> Attendance module — biometric + GPS clock-in/out for field staff.
+      </div>
+      <div style={{ marginBottom: 16 }}>
+        <AiInsight title="Attendance Insights" prompt="Analyse attendance patterns. Look at check-in/check-out times, status distribution. Identify punctuality trends." icon="fingerprint" />
       </div>
       <div className="card">
         <div className="card-hdr"><span className="card-title"><i className="ti ti-fingerprint" aria-hidden="true"></i> Today's attendance</span></div>

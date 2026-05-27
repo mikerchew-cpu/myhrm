@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useToast } from '@/components/Toast';
+import AiInsight from '@/components/AiInsight';
 
 interface LeaveReq {
   id: string;
@@ -62,6 +63,9 @@ export default function LeavePage() {
         <div className="metric"><div className="metric-lbl">Annual leave</div><div className="metric-val">12 days</div><div className="metric-sub">8 remaining</div></div>
         <div className="metric"><div className="metric-lbl">Medical leave (MC)</div><div className="metric-val">14 days</div><div className="metric-sub">12 remaining</div></div>
         <div className="metric"><div className="metric-lbl">Other entitlements</div><div className="metric-val">—</div><div className="metric-sub">Maternity · Paternity · Emergency</div></div>
+      </div>
+      <div style={{ marginBottom: 16 }}>
+        <AiInsight title="Leave Insights" prompt="Analyse leave request patterns. Look at leave types (annual, MC, etc.), pending/approved/rejected ratios. Provide recommendations for leave management." icon="calendar-off" />
       </div>
       <div className="g2">
         <div className="card">

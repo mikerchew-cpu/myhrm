@@ -3,8 +3,34 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("POSTGRES_URL_NON_POOLING")
+}
+
+model User {
+  id             String   @id @default(cuid())
+  username       String   @unique
+  email          String   @unique
+  givenName      String
+  surname        String
+  role           String   @default("Viewer")
+  department     String   @default("")
+  hierarchyLevel Int      @default(1)
+  approvalLevel  Int      @default(1)
+  status         String   @default("Active")
+  passwordHash   String   @default("")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model AiProvider {
+  id        String   @id @default(cuid())
+  provider  String   @unique
+  apiKey    String   @default("")
+  endpoint  String   @default("")
+  enabled   Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Employee {
@@ -151,6 +177,16 @@ model LevyRecord {
   createdAt  DateTime @default(now())
 }
 
+model Skill {
+  id         String   @id @default(cuid())
+  title      String
+  department String   @default("")
+  content    String   @default("")
+  filename   String   @default("")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
 model PayrollRecord {
   id         String   @id @default(cuid())
   employeeId String
@@ -165,4 +201,149 @@ model PayrollRecord {
   status     String   @default("Draft")
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+}
+
+model JobPosting {
+  id           String        @id @default(cuid())
+  title        String
+  department   String        @default("")
+  location     String        @default("")
+  type         String        @default("Permanent")
+  salaryMin    Float         @default(0)
+  salaryMax    Float         @default(0)
+  description  String        @default("")
+  requirements String        @default("")
+  status       String        @default("Draft")
+  closingDate  DateTime?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  applicants   Applicant[]
+  interviews   Interview[]
+}
+
+model Applicant {
+  id           String        @id @default(cuid())
+  jobPostingId String
+  jobPosting   JobPosting    @relation(fields: [jobPostingId], references: [id], onDelete: Cascade)
+  name         String
+  email        String        @default("")
+  phone        String        @default("")
+  source       String        @default("")
+  stage        String        @default("New")
+  status       String        @default("New")
+  rating       Int           @default(0)
+  resume       String        @default("")
+  coverLetter  String        @default("")
+  notes        String        @default("")
+  appliedDate  DateTime      @default(now())
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  interviews   Interview[]
+}
+
+model Interview {
+  id           String        @id @default(cuid())
+  applicantId  String
+  applicant    Applicant     @relation(fields: [applicantId], references: [id], onDelete: Cascade)
+  jobPostingId String
+  jobPosting   JobPosting    @relation(fields: [jobPostingId], references: [id], onDelete: Cascade)
+  interviewer  String        @default("")
+  type         String        @default("HR")
+  mode         String        @default("Video")
+  date         DateTime?
+  duration     Int           @default(60)
+  feedback     String        @default("")
+  rating       Int           @default(0)
+  status       String        @default("Scheduled")
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+model Document {
+  id          String    @id @default(cuid())
+  title       String
+  type        String    @default("")
+  department  String    @default("")
+  employeeId  String    @default("")
+  fileUrl     String    @default("")
+  issueDate   DateTime?
+  expiryDate  DateTime?
+  status      String    @default("Active")
+  notes       String    @default("")
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model ESubmission {
+  id          String   @id @default(cuid())
+  type        String
+  title       String
+  periodMonth Int
+  periodYear  Int
+  content     String   @default("")
+  recordCount Int      @default(0)
+  totalAmount Float    @default(0)
+  status      String   @default("Generated")
+  notes       String   @default("")
+  createdAt   DateTime @default(now())
+}
+
+model Training {
+  id            String    @id @default(cuid())
+  title         String
+  provider      String    @default("")
+  type          String    @default("")
+  cost          Float     @default(0)
+  employeeId    String    @default("")
+  employeeName  String    @default("")
+  startDate     DateTime?
+  endDate       DateTime?
+  status        String    @default("Planned")
+  certification String    @default("")
+  notes         String    @default("")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model Asset {
+  id           String   @id @default(cuid())
+  name         String
+  type         String   @default("")
+  serialNo     String   @default("")
+  employeeId   String   @default("")
+  employeeName String   @default("")
+  purchaseDate DateTime?
+  purchasePrice Float   @default(0)
+  status       String   @default("Assigned")
+  notes        String   @default("")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model JobChange {
+  id            String   @id @default(cuid())
+  employeeId    String   @default("")
+  employeeName  String   @default("")
+  changeType    String
+  previousValue String   @default("")
+  newValue      String   @default("")
+  effectiveDate DateTime?
+  reason        String   @default("")
+  approvedBy    String   @default("")
+  notes         String   @default("")
+  createdAt     DateTime @default(now())
+}
+
+model Announcement {
+  id          String   @id @default(cuid())
+  title       String
+  content     String   @default("")
+  category    String   @default("General")
+  priority    String   @default("Normal")
+  author      String   @default("")
+  publishDate DateTime @default(now())
+  expiryDate  DateTime?
+  status      String   @default("Active")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }

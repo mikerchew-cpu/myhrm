@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useToast } from '@/components/Toast';
+import AiInsight from '@/components/AiInsight';
 
 interface Employee {
   id: string;
@@ -74,6 +75,9 @@ export default function EmployeesPage() {
     <>
       <div className="callout callout-blue mb14">
         <i className="ti ti-info-circle" aria-hidden="true"></i> Employee directory — managed in PostgreSQL via Prisma ORM.
+      </div>
+      <div style={{ marginBottom: 16 }}>
+        <AiInsight title="Workforce Demographics" prompt="Analyse these employee demographics. Total headcount, department breakdown, status distribution. Provide insights on workforce composition and suggestions." icon="users" />
       </div>
       <div className="g2">
         <div className="card">

@@ -1,9 +1,65 @@
 import { PrismaClient } from "@prisma/client";
+import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
 async function main() {
   console.log("🌱 Seeding database...");
+
+  const hash = await bcrypt.hash("admin123", 10);
+
+  // Default users (always run — idempotent via upsert)
+  for (const u of [
+    { username: "admin", email: "admin@myhrm.com", givenName: "System", surname: "Admin", role: "Admin", department: "Admin", hierarchyLevel: 5, approvalLevel: 5 },
+    { username: "ahmad.hr", email: "ahmad@myhrm.com", givenName: "Ahmad", surname: "Hafiz", role: "HR Manager", department: "HR", hierarchyLevel: 3, approvalLevel: 3 },
+  ]) {
+    await prisma.user.upsert({
+      where: { username: u.username },
+      update: { passwordHash: hash },
+      create: { ...u, status: "Active", passwordHash: hash },
+    });
+  }
+  console.log("  ✓ 2 default users");
+
+  // Skill files (always check independently)
+  const skillCount = await prisma.skill.count();
+  if (skillCount === 0) {
+    const skillData = [
+      {
+        title: "Annual Leave Policy",
+        department: "HR",
+        content: `# Annual Leave Policy\n\n## Entitlement\n- Permanent staff: 14 days per year\n- Contract staff: 10 days per year\n- EP Cat III: 8 days per year\n\n## Carry Forward\n- Maximum 5 days can be carried forward to next year\n- Unused leave beyond 5 days will be forfeited\n\n## Application\n- Submit at least 7 days in advance\n- Emergency leave: notify within 24 hours\n- Peak periods (May-June): manager approval required\n\n## Encashment\n- Upon resignation, unused annual leave will be encashed at basic salary rate`,
+      },
+      {
+        title: "Medical Leave & MC",
+        department: "HR",
+        content: `# Medical Leave & MC Policy\n\n## Hospitalization\n- 60 days per year (including outpatient treatment for serious illness)\n- Extended hospitalization: up to 120 days with specialist certification\n\n## Outpatient Sick Leave\n- 14 days per year\n- MC must be from registered medical practitioner\n- Notification within 24 hours of absence\n\n## Procedure\n1. Notify supervisor within 24 hours\n2. Submit MC upon return\n3. For extended leave (>3 days), obtain company doctor clearance\n\n## EA 1955 Compliance\n- Section 60F: Paid sick leave entitlement\n- Medical certificate required for each day of absence`,
+      },
+      {
+        title: "EPF/SOCSO/EIS Rates",
+        department: "Finance",
+        content: `# Malaysia Statutory Contributions (2026)\n\n## EPF (Employees Provident Fund)\n- Employee contribution: 11% of monthly salary\n- Employer contribution: 12-13% (depending on salary band)\n- Foreign workers: EPF not mandatory (opt-in available)\n\n## SOCSO (Social Security)\n- Employee: 0.5% of monthly salary\n- Employer: 1.75% of monthly salary\n- Covers: employment injury, invalidity pension\n\n## EIS (Employment Insurance System)\n- Employee: 0.2% of monthly salary\n- Employer: 0.2% of monthly salary\n- Max covered wage: RM 5,000\n\n## PCB (Monthly Tax Deduction)\n- Calculated based on EA 1955 Schedule\n- Use LHDN's PCB calculator for exact figures`,
+      },
+      {
+        title: "Overtime Calculation",
+        department: "Finance",
+        content: `# Overtime (OT) Calculation\n\n## Normal Workday\n- Rate: 1.5x hourly rate\n- Hours beyond 8 hours per day\n\n## Weekend / Rest Day\n- 2.0x hourly rate for first 8 hours\n- 3.0x hourly rate beyond 8 hours\n\n## Public Holiday\n- 3.0x hourly rate for first 8 hours\n- 4.0x hourly rate beyond 8 hours\n\n## Hourly Rate Formula\n- Monthly salary / 26 days / 8 hours = hourly rate`,
+      },
+    ];
+    for (const s of skillData) {
+      await prisma.skill.create({ data: s });
+    }
+    console.log(`  ✓ ${skillData.length} skill files`);
+  } else {
+    console.log(`  ⏭️  ${skillCount} skills already exist`);
+  }
+
+  // Check if employee data already seeded
+  const existing = await prisma.employee.count();
+  if (existing > 0) {
+    console.log(`  ⏭️  ${existing} employees already exist, skipping sample data`);
+    return;
+  }
 
   // Employees
   const empData = [
@@ -20,11 +76,7 @@ async function main() {
   ];
 
   const employees = await Promise.all(
-    empData.map(e => prisma.employee.upsert({
-      where: { employeeId: e.employeeId },
-      update: e,
-      create: e,
-    }))
+    empData.map(e => prisma.employee.create({ data: e }))
   );
   console.log(`  ✓ ${employees.length} employees`);
 
@@ -91,11 +143,7 @@ async function main() {
     { employeeId: employees[6].id, score: 76, quarter: "Q2", year: 2026 },
   ];
   for (const p of perfData) {
-    await prisma.performance.upsert({
-      where: { employeeId: p.employeeId },
-      update: p,
-      create: p,
-    });
+    await prisma.performance.create({ data: p });
   }
   console.log(`  ✓ ${perfData.length} performance records`);
 
@@ -126,11 +174,7 @@ async function main() {
     { employeeId: employees[4].id, nationality: "Indonesian", permitType: "VP(TE)", permitExpiry: new Date("2026-06-14"), levyPaid: true, fomemaStatus: "Due", securityBond: 1500 },
   ];
   for (const f of fwData) {
-    await prisma.foreignWorker.upsert({
-      where: { employeeId: f.employeeId },
-      update: f,
-      create: f,
-    });
+    await prisma.foreignWorker.create({ data: f });
   }
   console.log(`  ✓ ${fwData.length} foreign worker records`);
 

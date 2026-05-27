@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import AiInsight from '@/components/AiInsight';
 
 interface MileageRec {
   id: string;
@@ -32,6 +33,9 @@ export default function MileagePage() {
     <>
       <div className="callout callout-teal mb14">
         <i className="ti ti-car" aria-hidden="true"></i> Mileage tracker — GPS-verified routes, auto-calculated claims at RM 0.60/km.
+      </div>
+      <div style={{ marginBottom: 16 }}>
+        <AiInsight title="Mileage Insights" prompt="Analyse mileage claims - total km claimed, amounts, patterns. Flag any unusual usage." icon="car" />
       </div>
       <div className="g3 mb14">
         <div className="metric"><div className="metric-lbl">Total distance</div><div className="metric-val">{Math.round(totalKm).toLocaleString()} km</div></div>

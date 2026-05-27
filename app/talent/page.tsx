@@ -1,8 +1,11 @@
 'use client';
 
+import AiInsight from '@/components/AiInsight';
+
 export default function TalentPage() {
   return (
     <>
+      <div style={{ marginBottom: 16 }}><AiInsight title="Talent Analysis" prompt="Analyse the talent matrix - performance ratings, potential, succession readiness. Provide talent development insights." icon="star" /></div>
       <div className="card mb14">
         <div className="card-hdr">
           <span className="card-title"><i className="ti ti-grid-4x4" aria-hidden="true"></i> 9-box talent matrix — Q2 2026</span>

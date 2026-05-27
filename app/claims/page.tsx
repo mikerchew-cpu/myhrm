@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useToast } from '@/components/Toast';
+import AiInsight from '@/components/AiInsight';
 
 interface Claim {
   id: string;
@@ -59,7 +60,11 @@ export default function ClaimsPage() {
   if (loading) return <div className="loading-dots"><div /><div /><div /></div>;
 
   return (
-    <div className="g2">
+    <>
+      <div style={{ marginBottom: 16 }}>
+        <AiInsight title="Claims Analysis" prompt="Analyse the claims data - amounts, categories, approval rates. Highlight trends and anomalies." icon="receipt" />
+      </div>
+      <div className="g2">
       <div className="card">
         <div className="card-hdr"><span className="card-title"><i className="ti ti-plus" aria-hidden="true"></i> New field claim</span></div>
         <div className="form-row">
@@ -121,6 +126,7 @@ export default function ClaimsPage() {
           </div>
         )}
       </div>
-    </div>
+      </div>
+    </>
   );
 }

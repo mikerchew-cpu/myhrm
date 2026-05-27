@@ -5,7 +5,7 @@ import type { ApiResponse } from "@/lib/types";
 
 export async function POST(req: NextRequest) {
   try {
-    const { question, department } = await req.json();
+    const { question, department, context: extraContext } = await req.json();
     if (!question) {
       return NextResponse.json({ success: false, error: "question is required" }, { status: 400 });
     }
@@ -34,8 +34,9 @@ export async function POST(req: NextRequest) {
 
       const provider = await prisma.aiProvider.findFirst({ where: { enabled: true } });
       if (provider) {
+        const systemContext = extraContext ? `\n\nAdditional context data:\n${JSON.stringify(extraContext, null, 2)}` : '';
         const answer = await callAi(provider.provider, provider.apiKey, [
-          { role: "system", content: `You are an HR assistant. Answer using the provided skill documents first. If the answer isn't in the documents, use your own knowledge.\n\nRelevant skill documents:\n${context}` },
+          { role: "system", content: `You are an HR assistant. Answer using the provided skill documents first. If the answer isn't in the documents, use your own knowledge.\n\nRelevant skill documents:\n${context}${systemContext}` },
           { role: "user", content: question },
         ], provider.endpoint);
         return NextResponse.json({
@@ -61,8 +62,9 @@ export async function POST(req: NextRequest) {
       } satisfies ApiResponse);
     }
 
+    const systemContext = extraContext ? `\n\nData context:\n${JSON.stringify(extraContext, null, 2)}` : '';
     const answer = await callAi(provider.provider, provider.apiKey, [
-      { role: "system", content: "You are an HR assistant for Malaysia HR management. Answer helpfully and concisely." },
+      { role: "system", content: `You are an HR assistant for Malaysia HR management. Answer helpfully and concisely.${systemContext}` },
       { role: "user", content: question },
     ], provider.endpoint);
     return NextResponse.json({

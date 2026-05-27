@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import AiInsight from '@/components/AiInsight';
 
 export default function OvertimePage() {
   const [sal, setSal] = useState(3500);
@@ -16,7 +17,10 @@ export default function OvertimePage() {
     <>
       <div className="callout callout-blue">
         <i className="ti ti-info-circle" aria-hidden="true"></i>
-        EA 1955 s60A: OT rate = Monthly Salary ÷ 26 ÷ 8 × multiplier. Cap: 104 hrs/month.
+        EA 1955 s60A:         OT rate = Monthly Salary ÷ 26 ÷ 8 × multiplier. Cap: 104 hrs/month.
+      </div>
+      <div style={{ marginBottom: 16 }}>
+        <AiInsight title="Overtime Analysis" prompt="Analyse overtime data. Look at total hours, department breakdown, and accrual amounts. Identify departments with high OT and suggest improvements." icon="clock-bolt" />
       </div>
       <div className="g2">
         <div className="card">

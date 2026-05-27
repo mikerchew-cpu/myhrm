@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import AiInsight from '@/components/AiInsight';
 
 interface Perf {
   id: string;
@@ -36,6 +37,7 @@ export default function PerformancePage() {
 
   return (
     <>
+      <div style={{ marginBottom: 16 }}><AiInsight title="Performance Insights" prompt="Analyse employee performance data. Look at ratings, scores, trends. Provide recommendations for performance improvement." icon="chart-arrows" /></div>
       <div className="g5 mb14">
         <div className="metric"><div className="metric-lbl">Org avg score</div><div className="metric-val">{avg}<span style={{ fontSize: 14, color: 'var(--muted)' }}>/100</span></div><div className="metric-sub up">↑ +4 vs Q1</div></div>
         <div className="metric"><div className="metric-lbl">KPI attainment</div><div className="metric-val">82<span style={{ fontSize: 14, color: 'var(--muted)' }}>%</span></div><div className="metric-sub up">↑ +6% vs Q1</div></div>

@@ -7,16 +7,20 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "postinstall": "prisma generate",
+    "postinstall": "if [ \"$VERCEL\" = \"1\" ]; then prisma generate; else prisma generate --schema=prisma/schema.sqlite.prisma; fi",
     "db:migrate": "prisma migrate dev --name init",
     "db:push": "prisma db push",
     "db:seed": "npx tsx scripts/seed.ts",
     "db:studio": "prisma studio",
+    "db:sqlite:generate": "prisma generate --schema=prisma/schema.sqlite.prisma",
+    "db:sqlite:push": "prisma db push --schema=prisma/schema.sqlite.prisma",
     "lint": "next lint",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@prisma/client": "^6.1.0",
+    "bcryptjs": "^3.0.3",
+    "jose": "^6.2.3",
     "next": "^15.1.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"

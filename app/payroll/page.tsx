@@ -1,10 +1,15 @@
 'use client';
 
+import AiInsight from '@/components/AiInsight';
+
 export default function PayrollPage() {
   return (
     <>
       <div className="callout callout-green mb14">
         <i className="ti ti-check" aria-hidden="true"></i> May 2026 payroll ready for review. EPF, SOCSO, EIS, and PCB computed.
+      </div>
+      <div style={{ marginBottom: 16 }}>
+        <AiInsight title="Payroll Analysis" prompt="Analyse the payroll data. Look at gross salaries, EPF, SOCSO, EIS contributions. Identify trends, anomalies, or cost-saving observations." icon="cash" />
       </div>
       <div className="g4 mb14">
         <div className="metric"><div className="metric-lbl">Gross payroll</div><div className="metric-val">RM 248,500</div></div>

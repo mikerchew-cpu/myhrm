@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MyHRM Pro — Malaysia Edition</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.31.0/dist/tabler-icons.min.css">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #0C447C; --blue: #185FA5; --blue-lt: #E6F1FB; --blue-mid: #B5D4F4;
+  --teal: #0F6E56; --teal-lt: #E1F5EE; --teal-mid: #9FE1CB;
+  --green: #3B6D11; --green-lt: #EAF3DE; --green-mid: #C0DD97;
+  --amber: #854F0B; --amber-lt: #FAEEDA; --amber-mid: #FAC775;
+  --red: #A32D2D; --red-lt: #FCEBEB; --red-mid: #F7C1C1;
+  --purple: #534AB7; --purple-lt: #EEEDFE; --purple-mid: #CECBF6;
+  --gray-50: #F1EFE8; --gray-100: #D3D1C7; --gray-400: #888780;
+  --gray-600: #5F5E5A; --gray-800: #444441; --gray-900: #2C2C2A;
+  --bg: #F4F3F0; --surface: #FFFFFF; --border: rgba(0,0,0,0.09);
+  --border-md: rgba(0,0,0,0.13); --text: #1A1918; --muted: #5F5E5A;
+  --sidebar-w: 232px; --header-h: 56px; --font: 'DM Sans', sans-serif; --mono: 'DM Mono', monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--font);font-size:14px;color:var(--text);background:var(--bg);min-height:100vh;display:flex;flex-direction:column;}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;}
+a{color:inherit;text-decoration:none;}
+button{font-family:var(--font);cursor:pointer;}
+input,select,textarea{font-family:var(--font);}
+
+/* ── Layout ─────────────────────────────────────── */
+.shell{display:flex;height:100vh;overflow:hidden;}
+.sidebar{width:var(--sidebar-w);background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;z-index:10;}
+.main{flex:1;display:flex;flex-direction:column;min-width:0;overflow:hidden;}
+.topbar{height:var(--header-h);background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px;gap:10px;flex-shrink:0;}
+.content{flex:1;overflow-y:auto;padding:20px;background:var(--bg);}
+
+/* ── Sidebar ─────────────────────────────────────── */
+.sb-brand{padding:0 16px;height:56px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);}
+.sb-logo{width:30px;height:30px;border-radius:8px;background:var(--navy);display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px;flex-shrink:0;}
+.sb-name{font-size:14px;font-weight:600;color:var(--text);}
+.sb-sub{font-size:10px;color:var(--muted);letter-spacing:.3px;}
+.sb-sec{padding:14px 16px 4px;font-size:10px;font-weight:600;color:var(--gray-400);text-transform:uppercase;letter-spacing:.8px;}
+.sb-item{display:flex;align-items:center;gap:9px;padding:7px 12px;border-radius:8px;margin:1px 8px;cursor:pointer;font-size:13px;color:var(--muted);transition:background .12s,color .12s;}
+.sb-item:hover{background:var(--bg);color:var(--text);}
+.sb-item.active{background:var(--blue-lt);color:var(--blue);font-weight:500;}
+.sb-item.active i{color:var(--blue);}
+.sb-item i{font-size:16px;width:18px;color:var(--gray-400);}
+.sb-badge{margin-left:auto;font-size:10px;padding:2px 6px;border-radius:20px;font-weight:600;}
+.b-red{background:var(--red-lt);color:var(--red);}
+.b-amber{background:var(--amber-lt);color:var(--amber);}
+.sb-footer{margin-top:auto;padding:12px;border-top:1px solid var(--border);}
+.ai-pill{display:flex;align-items:center;gap:8px;padding:9px 11px;background:var(--teal-lt);border-radius:8px;cursor:pointer;border:1px solid transparent;transition:border-color .15s;}
+.ai-pill:hover{border-color:var(--teal-mid);}
+.ai-dot{width:7px;height:7px;border-radius:50%;background:var(--teal);flex-shrink:0;}
+.ai-lbl{font-size:12px;color:var(--teal);font-weight:600;}
+.ai-sub{font-size:10px;color:var(--teal);opacity:.7;}
+
+/* ── Topbar ─────────────────────────────────────── */
+.tb-title{font-size:15px;font-weight:600;flex:1;}
+.tb-pill{font-size:11px;background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:4px 10px;color:var(--muted);display:flex;align-items:center;gap:5px;}
+.tb-pill i{font-size:13px;}
+.tb-pill.success{background:var(--green-lt);color:var(--green);border-color:var(--green-mid);}
+.tb-av{width:30px;height:30px;border-radius:50%;background:var(--blue-mid);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:var(--navy);cursor:pointer;}
+.tb-sep{width:1px;height:20px;background:var(--border);}
+
+/* ── Cards / surfaces ────────────────────────────── */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px;}
+.card-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.card-title{font-size:13px;font-weight:600;display:flex;align-items:center;gap:7px;color:var(--text);}
+.card-title i{font-size:15px;color:var(--muted);}
+.card-link{font-size:12px;color:var(--blue);cursor:pointer;display:flex;align-items:center;gap:4px;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px;}
+.g5{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:14px;}
+.mb14{margin-bottom:14px;}
+
+/* ── Metric cards ────────────────────────────────── */
+.metric{background:var(--bg);border-radius:10px;padding:13px 15px;border:1px solid var(--border);}
+.metric-lbl{font-size:11px;color:var(--muted);margin-bottom:5px;display:flex;align-items:center;gap:5px;}
+.metric-lbl i{font-size:13px;}
+.metric-val{font-size:22px;font-weight:600;line-height:1;}
+.metric-sub{font-size:11px;color:var(--muted);margin-top:4px;}
+.up{color:var(--green);}
+.dn{color:var(--red);}
+
+/* ── Rows ────────────────────────────────────────── */
+.row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);}
+.row:last-child{border-bottom:none;}
+.row-av{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;flex-shrink:0;}
+.row-name{font-size:13px;font-weight:500;}
+.row-sub{font-size:11px;color:var(--muted);}
+.row-right{margin-left:auto;text-align:right;}
+.row-amt{font-size:13px;font-weight:600;}
+
+/* ── Badges ──────────────────────────────────────── */
+.badge{font-size:10px;padding:2px 8px;border-radius:20px;font-weight:600;white-space:nowrap;}
+.badge-pend{background:var(--amber-lt);color:var(--amber);}
+.badge-appr{background:var(--green-lt);color:var(--green);}
+.badge-reje{background:var(--red-lt);color:var(--red);}
+.badge-info{background:var(--blue-lt);color:var(--blue);}
+.badge-ot{background:var(--purple-lt);color:var(--purple);}
+.badge-te{background:var(--teal-lt);color:var(--teal);}
+
+/* ── KPI bars ────────────────────────────────────── */
+.kpi-row{display:flex;align-items:center;gap:10px;margin-bottom:9px;}
+.kpi-lbl{font-size:12px;color:var(--muted);width:120px;flex-shrink:0;}
+.kpi-track{flex:1;height:5px;background:var(--bg);border-radius:3px;overflow:hidden;border:1px solid var(--border);}
+.kpi-fill{height:100%;border-radius:3px;}
+.kpi-val{font-size:12px;font-weight:600;width:36px;text-align:right;}
+
+/* ── Buttons ─────────────────────────────────────── */
+.btn{padding:6px 14px;border-radius:7px;font-size:12px;font-weight:500;border:1px solid var(--border-md);background:var(--surface);color:var(--text);cursor:pointer;transition:background .12s;}
+.btn:hover{background:var(--bg);}
+.btn-primary{background:var(--navy);color:#fff;border-color:var(--navy);}
+.btn-primary:hover{background:var(--blue);}
+.btn-sm{padding:4px 10px;font-size:11px;}
+.btn-danger{border-color:var(--red-mid);color:var(--red);}
+.btn-danger:hover{background:var(--red-lt);}
+.btn-teal{background:var(--teal);color:#fff;border-color:var(--teal);}
+.btn-teal:hover{background:var(--teal-lt);color:var(--teal);}
+.btn-success{background:var(--green);color:#fff;border-color:var(--green);}
+.btn-success:hover{background:var(--green-lt);color:var(--green);}
+
+/* ── Forms ───────────────────────────────────────── */
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+.form-group{display:flex;flex-direction:column;gap:4px;}
+.form-label{font-size:11px;font-weight:500;color:var(--muted);}
+.form-input{padding:7px 10px;border:1px solid var(--border-md);border-radius:7px;font-size:13px;color:var(--text);background:var(--surface);font-family:var(--font);outline:none;transition:border-color .15s;}
+.form-input:focus{border-color:var(--blue);}
+select.form-input{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px;}
+
+/* ── Tab row ─────────────────────────────────────── */
+.tab-row{display:flex;gap:4px;background:var(--bg);padding:3px;border-radius:9px;margin-bottom:16px;}
+.tab{flex:1;text-align:center;padding:6px;border-radius:7px;font-size:12px;cursor:pointer;color:var(--muted);font-weight:500;}
+.tab.on{background:var(--surface);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.08);}
+
+/* ── Process steps ───────────────────────────────── */
+.steps{display:flex;overflow-x:auto;gap:0;margin-bottom:16px;}
+.step{flex:1;min-width:90px;text-align:center;padding:9px 4px 8px;border:1px solid var(--border);background:var(--surface);position:relative;}
+.step+.step{border-left:none;}
+.step:first-child{border-radius:8px 0 0 8px;}
+.step:last-child{border-radius:0 8px 8px 0;}
+.step.done{background:var(--teal-lt);border-color:var(--teal-mid);}
+.step.active{background:var(--blue-lt);border-color:var(--blue-mid);}
+.step.warn{background:var(--amber-lt);border-color:var(--amber-mid);}
+.step-num{font-size:9px;color:var(--muted);margin-bottom:3px;font-family:var(--mono);}
+.step-lbl{font-size:10px;font-weight:600;color:var(--text);line-height:1.3;}
+.step-time{font-size:9px;color:var(--muted);margin-top:3px;}
+
+/* ── Callout ─────────────────────────────────────── */
+.callout{padding:10px 13px;border-radius:8px;font-size:12px;line-height:1.6;margin-bottom:12px;}
+.callout-blue{background:var(--blue-lt);color:var(--navy);border-left:3px solid var(--blue);}
+.callout-amber{background:var(--amber-lt);color:var(--amber);border-left:3px solid var(--amber-mid);}
+.callout-green{background:var(--green-lt);color:var(--green);border-left:3px solid var(--green-mid);}
+.callout-teal{background:var(--teal-lt);color:var(--teal);border-left:3px solid var(--teal);}
+
+/* ── Divider ─────────────────────────────────────── */
+.divider{height:1px;background:var(--border);margin:10px 0;}
+
+/* ── Progress ────────────────────────────────────── */
+.prog-bar{height:5px;background:var(--bg);border-radius:3px;overflow:hidden;border:1px solid var(--border);}
+.prog-fill{height:100%;border-radius:3px;}
+
+/* ── Approval chain ──────────────────────────────── */
+.chain{display:flex;align-items:center;gap:4px;margin-top:5px;}
+.chain-badge{font-size:9px;padding:2px 7px;border-radius:20px;font-weight:600;}
+.chain-done{background:var(--green-lt);color:var(--green);}
+.chain-active{background:var(--blue-lt);color:var(--blue);}
+.chain-wait{background:var(--bg);color:var(--muted);border:1px solid var(--border);}
+.chain-arrow{font-size:9px;color:var(--muted);}
+
+/* ── Talent grid ─────────────────────────────────── */
+.talent-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;}
+.talent-cell{border-radius:8px;padding:9px 11px;border:1px solid var(--border);}
+.talent-cell.star{border-width:2px;border-color:var(--blue);}
+.talent-cell-lbl{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;}
+.talent-cell-names{font-size:11px;line-height:1.6;}
+.talent-cell-action{font-size:10px;margin-top:4px;font-style:italic;}
+
+/* ── Expiry bar ──────────────────────────────────── */
+.exp-bar{height:4px;border-radius:2px;margin-top:3px;width:80px;}
+
+/* ── Matrix table ────────────────────────────────── */
+.matrix-table{width:100%;border-collapse:collapse;font-size:11px;}
+.matrix-table th{padding:8px 10px;text-align:left;background:var(--bg);border-bottom:2px solid var(--border-md);font-weight:600;color:var(--muted);font-size:11px;}
+.matrix-table td{padding:8px 10px;border-bottom:1px solid var(--border);vertical-align:middle;}
+.matrix-table tr:last-child td{border-bottom:none;}
+.matrix-table tr:nth-child(even) td{background:var(--bg);}
+.ck{color:var(--green);font-weight:700;font-size:14px;}
+
+/* ── AI chips ────────────────────────────────────── */
+.ai-chips{display:flex;flex-wrap:wrap;gap:6px;}
+.ai-chip{font-size:11px;background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:5px 11px;cursor:pointer;color:var(--muted);transition:border-color .12s,color .12s;}
+.ai-chip:hover{border-color:var(--teal-mid);color:var(--teal);}
+
+/* ── Esc ladder ──────────────────────────────────── */
+.esc-rung{display:flex;align-items:center;gap:10px;padding:10px 13px;border:1px solid var(--border);background:var(--surface);}
+.esc-rung+.esc-rung{border-top:none;}
+.esc-rung:first-child{border-radius:8px 8px 0 0;}
+.esc-rung:last-child{border-radius:0 0 8px 8px;}
+.esc-num{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0;}
+.esc-role{font-size:13px;font-weight:500;}
+.esc-note{font-size:11px;color:var(--muted);}
+
+/* ── Score ring ──────────────────────────────────── */
+.score-wrap{display:flex;align-items:center;gap:12px;}
+.score-ring{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;flex-shrink:0;border:3px solid;}
+.score-great{border-color:var(--green);color:var(--green);}
+.score-good{border-color:var(--blue);color:var(--blue);}
+.score-warn{border-color:var(--amber);color:var(--amber);}
+.score-bad{border-color:var(--red);color:var(--red);}
+
+/* ── OT calc ─────────────────────────────────────── */
+.ot-result{background:var(--bg);border-radius:9px;padding:13px;border:1px solid var(--border);}
+.ot-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);font-size:12px;}
+.ot-row:last-child{border-bottom:none;}
+
+/* ── Toast notification ──────────────────────────── */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--navy);color:#fff;padding:10px 18px;border-radius:10px;font-size:13px;box-shadow:0 4px 14px rgba(0,0,0,.18);z-index:100;animation:fadeIn .2s ease;max-width:340px;}
+.toast.toast-success{background:var(--green);}
+.toast.toast-error{background:var(--red);}
+
+/* ── Mobile toggle ───────────────────────────────── */
+.mobile-toggle{display:none;width:30px;height:30px;align-items:center;justify-content:center;cursor:pointer;border:none;background:none;color:var(--text);font-size:18px;flex-shrink:0;}
+
+/* ── Animations ──────────────────────────────────── */
+.view{animation:fadeIn .18s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+
+/* ── Scrollbar ───────────────────────────────────── */
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--gray-100);border-radius:10px;}
+
+/* ── Responsive ──────────────────────────────────── */
+@media (max-width: 1024px) {
+  .g4{grid-template-columns:1fr 1fr;}
+  .g5{grid-template-columns:1fr 1fr 1fr;}
+  .g3{grid-template-columns:1fr 1fr;}
+  .talent-grid{grid-template-columns:1fr 1fr;}
+}
+@media (max-width: 768px) {
+  .sidebar{position:fixed;left:0;top:0;bottom:0;transform:translateX(-100%);transition:transform .2s ease;z-index:100;}
+  .sidebar.open{transform:translateX(0);box-shadow:4px 0 20px rgba(0,0,0,.15);}
+  .mobile-toggle{display:flex;}
+  .tb-title{font-size:13px;}
+  .tb-pill span{display:none;}
+  .g2,.g3,.g4,.g5{grid-template-columns:1fr;}
+  .form-row{grid-template-columns:1fr;}
+  .talent-grid{grid-template-columns:1fr 1fr;}
+  .steps{flex-wrap:nowrap;}
+  .step{min-width:70px;}
+}
+@media (max-width: 480px) {
+  .content{padding:12px;}
+  .card{padding:12px 14px;}
+  .tb-pill{font-size:10px;padding:3px 7px;}
+  .talent-grid{grid-template-columns:1fr;}
+  .g2,.g3,.g4,.g5{grid-template-columns:1fr;}
+  .steps{flex-wrap:nowrap;}
+  .step{min-width:60px;}
+}
+</style>
+</head>
+<body>
+
+<h1 class="sr-only">MyHRM Pro — Malaysia HR Management Application</h1>
+
+<div class="shell">
+  <!-- ── SIDEBAR ── -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sb-brand">
+      <div class="sb-logo"><i class="ti ti-building-skyscraper" aria-hidden="true"></i></div>
+      <div>
+        <div class="sb-name">MyHRM Pro</div>
+        <div class="sb-sub">Malaysia Edition 2026</div>
+      </div>
+    </div>
+
+    <div class="sb-sec">Core</div>
+    <div class="sb-item active" data-view="dashboard" onclick="nav('dashboard',this)"><i class="ti ti-layout-dashboard" aria-hidden="true"></i> Dashboard</div>
+    <div class="sb-item" data-view="employees" onclick="nav('employees',this)"><i class="ti ti-users" aria-hidden="true"></i> Employees</div>
+    <div class="sb-item" data-view="payroll" onclick="nav('payroll',this)"><i class="ti ti-cash" aria-hidden="true"></i> Payroll & EPF/SOCSO</div>
+
+    <div class="sb-sec">Workforce</div>
+    <div class="sb-item" data-view="leave" onclick="nav('leave',this)"><i class="ti ti-calendar-off" aria-hidden="true"></i> Leave Management <span class="sb-badge b-amber">5</span></div>
+    <div class="sb-item" data-view="overtime" onclick="nav('overtime',this)"><i class="ti ti-clock-bolt" aria-hidden="true"></i> Overtime (OT)</div>
+    <div class="sb-item" data-view="attendance" onclick="nav('attendance',this)"><i class="ti ti-fingerprint" aria-hidden="true"></i> Attendance</div>
+
+    <div class="sb-sec">Field Services</div>
+    <div class="sb-item" data-view="claims" onclick="nav('claims',this)"><i class="ti ti-receipt" aria-hidden="true"></i> Claims <span class="sb-badge b-red">8</span></div>
+    <div class="sb-item" data-view="mileage" onclick="nav('mileage',this)"><i class="ti ti-car" aria-hidden="true"></i> Mileage Tracker</div>
+
+    <div class="sb-sec">Approvals</div>
+    <div class="sb-item" data-view="approvals" onclick="nav('approvals',this)"><i class="ti ti-git-branch" aria-hidden="true"></i> Approval Workflow <span class="sb-badge b-red">13</span></div>
+    <div class="sb-item" data-view="matrix" onclick="nav('matrix',this)"><i class="ti ti-table" aria-hidden="true"></i> Approval Matrix</div>
+
+    <div class="sb-sec">HR Tools</div>
+    <div class="sb-item" data-view="performance" onclick="nav('performance',this)"><i class="ti ti-chart-arrows" aria-hidden="true"></i> Performance</div>
+    <div class="sb-item" data-view="talent" onclick="nav('talent',this)"><i class="ti ti-star" aria-hidden="true"></i> Talent Matrix</div>
+    <div class="sb-item" data-view="foreign" onclick="nav('foreign',this)"><i class="ti ti-world" aria-hidden="true"></i> Foreign Workers</div>
+    <div class="sb-item" data-view="levy" onclick="nav('levy',this)"><i class="ti ti-calculator" aria-hidden="true"></i> Levy Calculator</div>
+
+    <div class="sb-footer">
+      <div class="ai-pill">
+        <div class="ai-dot"></div>
+        <div>
+          <div class="ai-lbl"><i class="ti ti-brain" aria-hidden="true"></i> DeepSeek AI</div>
+          <div class="ai-sub">Connected · Ready</div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ── MAIN ── -->
+  <div class="main">
+    <div class="topbar">
+      <button class="mobile-toggle" onclick="toggleSidebar()" aria-label="Toggle sidebar"><i class="ti ti-menu-2"></i></button>
+      <span class="tb-title" id="page-title">Dashboard — Overview</span>
+      <div class="tb-pill"><i class="ti ti-calendar" aria-hidden="true"></i> <span>May 2026</span></div>
+      <div class="tb-pill success"><i class="ti ti-shield-check" aria-hidden="true"></i> <span>EA 1955 Compliant</span></div>
+      <div class="tb-sep"></div>
+      <div class="tb-pill"><i class="ti ti-bell" aria-hidden="true"></i> 3</div>
+      <div class="tb-av" title="Ahmad Hafiz — HR Manager">AH</div>
+    </div>
+
+    <div class="content" id="content">
+      <!-- Views injected by JS -->
+    </div>
+  </div>
+</div>
+
+<script>
+/* ─────────────────────────────────────────
+   DATA
+───────────────────────────────────────── */
+const titles = {
+  dashboard:'Dashboard — Overview', employees:'Employee Directory',
+  payroll:'Payroll & Statutory (May 2026)', leave:'Leave Management',
+  overtime:'Overtime (OT) Calculator & Log', attendance:'Attendance Tracking',
+  claims:'Field Claims Management', mileage:'Mileage Tracker',
+  approvals:'Approval Workflow — Manager Inbox', matrix:'Approval Matrix',
+  performance:'Performance Dashboard — Q2 2026', talent:'9-Box Talent Matrix',
+  foreign:'Foreign Worker Management', levy:'Levy Calculator'
+};
+
+function toast(msg, type) {
+  const el = document.createElement('div');
+  el.className = 'toast' + (type ? ' toast-' + type : '');
+  el.textContent = msg;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 3000);
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+}
+
+/* ─────────────────────────────────────────
+   VIEWS
+───────────────────────────────────────── */
+const views = {
+
+/* ── DASHBOARD ─────────────────────────── */
+dashboard: () => `
+<div class="callout callout-amber" style="margin-bottom:16px">
+  <i class="ti ti-alert-triangle" aria-hidden="true"></i>
+  <strong>Action needed:</strong> 2 permits expiring in &lt;30 days · 8 claims pending approval · FOMEMA overdue for 1 worker
+</div>
+<div class="g4">
+  <div class="metric"><div class="metric-lbl"><i class="ti ti-users" aria-hidden="true"></i> Total employees</div><div class="metric-val">142</div><div class="metric-sub up">↑ 3 this month</div></div>
+  <div class="metric"><div class="metric-lbl"><i class="ti ti-receipt" aria-hidden="true"></i> Pending claims</div><div class="metric-val" style="color:var(--amber)">8</div><div class="metric-sub">RM 12,430 total value</div></div>
+  <div class="metric"><div class="metric-lbl"><i class="ti ti-calendar-off" aria-hidden="true"></i> Leave requests</div><div class="metric-val" style="color:var(--blue)">5</div><div class="metric-sub">3 annual · 2 MC</div></div>
+  <div class="metric"><div class="metric-lbl"><i class="ti ti-clock-bolt" aria-hidden="true"></i> OT this month</div><div class="metric-val">324 hrs</div><div class="metric-sub">RM 18,960 accrued</div></div>
+</div>
+<div class="g2">
+  <div class="card">
+    <div class="card-hdr"><span class="card-title"><i class="ti ti-receipt" aria-hidden="true"></i> Recent claims</span><span class="card-link" onclick="nav('claims',null)">View all <i class="ti ti-arrow-right" aria-hidden="true"></i></span></div>
+    <div class="row"><div class="row-av" style="background:#B5D4F4;color:#0C447C">RA</div><div><div class="row-name">Rashid Abdullah</div><div class="row-sub">Mileage · KL → JB</div></div><div class="row-right"><div class="row-amt">RM 340</div><span class="badge badge-pend">Pending</span></div></div>
+    <div class="row"><div class="row-av" style="background:#9FE1CB;color:#085041">LM</div><div><div class="row-name">Lim Mei Ying</div><div class="row-sub">Lodging · Penang</div></div><div class="row-right"><div class="row-amt">RM 280</div><span class="badge badge-appr">Approved</span></div></div>
+    <div class="row"><div class="row-av" style="background:#EEEDFE;color:#534AB7">KS</div><div><div class="row-name">Kumari Selvam</div><div class="row-sub">Meals · Klang Valley</div></div><div class="row-right"><div class="row-amt">RM 95</div><span class="badge badge-pend">Pending</span></div></div>
+    <div class="row"><div class="row-av" style="background:#FAEEDA;color:#854F0B">AH</div><div><div class="row-name">Ahmad Hafiz</div><div class="row-sub">Toll + Parking</div></div><div class="row-right"><div class="row-amt">RM 62</div><span class="badge badge-appr">Approved</span></div></div>
+  </div>
+  <div class="card">
+    <div class="card-hdr"><span class="card-title"><i class="ti ti-calendar-off" aria-hidden="true"></i> Leave queue</span><span class="card-link" onclick="nav('leave',null)">Manage <i class="ti ti-arrow-right" aria-hidden="true"></i></span></div>
+    <div class="row"><div class="row-av" style="background:#F4C0D1;color:#72243E">NZ</div><div><div class="row-name">Nurul Zahira</div><div class="row-sub">Annual · 22–24 May · 3 days</div></div><div class="row-right"><span class="badge badge-pend">Pending</span></div></div>
+    <div class="row"><div class="row-av" style="background:#B5D4F4;color:#0C447C">JT</div><div><div class="row-name">Jason Tan</div><div class="row-sub">MC · 16 May · 1 day</div></div><div class="row-right"><span class="badge badge-appr">Approved</span></div></div>
+    <div class="row"><div class="row-av" style="background:#C0DD97;color:#27500A">FH</div><div><div class="row-name">Faizal Hashim</div><div class="row-sub">Emergency · 17 May</div></div><div class="row-right"><span class="badge badge-pend">Pending</span></div></div>
+    <div class="row"><div class="row-av" style="background:#EEEDFE;color:#3C3489">PR</div><div><div class="row-name">Priya Rajendran</div><div class="row-sub">Unpaid · 19–20 May</div></div><div class="row-right"><span class="badge badge-pend">Pending</span></div></div>
+  </div>
+</div>
+<div class="g3">
+  <div class="card">
+    <div class="card-hdr"><span class="card-title"><i class="ti ti-clock-bolt" aria-hidden="true"></i> OT summary</span></div>
+    <div class="ot-row"><span>Weekday (×1.5)</span><span style="font-weight:600">186 hrs</span></div>
+    <div class="ot-row"><span>Weekend (×2.0)</span><span style="font-weight:600">98 hrs</span></div>
+    <div class="ot-row"><span>Public holiday (×3.0)</span><span style="font-weight:600">40 hrs</span></div>
+    <div class="ot-row" style="border-top:1px solid var(--border);margin-top:4px;padding-top:8px"><span style="font-weight:600">Total payable</span><span style="font-weight:700;color:var(--blue)">RM 18,960</span></div>
+  </div>
+  <div class="card">
+    <div class="card-hdr"><span class="card-title"><i class="ti ti-car" aria-hidden="true"></i> Mileage this month</span></div>
+    <div style="margin-bottom:9px"><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span style="color:var(--muted)">2,840 km claimed</span><span style="font-weight:600">RM 1,704</span></div><div class="prog-bar"><div class="prog-fill" style="width:71%;background:var(--blue)"></div></div></div>
+    <div style="margin-bottom:9px"><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span style="color:var(--muted)">Rate: RM 0.60/km</span><span style="font-weight:600;color:var(--green)">24 staff</span></div><div class="prog-bar"><div class="prog-fill" style="width:55%;background:var(--green)"></div></div></div>
+    <div class="ot-row"><span style="font-weight:600">Total mileage claim</span><span style="font-weight:700;color:var(--blue)">RM 1,704</span></div>
+  </div>
+  <div class="card">
+    <div class="card-hdr"><span class="card-title"><i class="ti ti-cash" aria-hidden="true"></i> Payroll snapshot</span></div>
+    <div class="ot-row"><span style="color:var(--muted)">Gross salaries</span><span style="font-weight:600">RM 248,500</span></div>
+    <div class="ot-row"><span style="color:var(--muted)">EPF (12%)</span><span style="font-weight:600">RM 29,820</span></div>
+    <div class="ot-row"><span style="color:var(--muted)">SOCSO</span><span style="font-weight:600">RM 3,240</span></div>
+    <div class="ot-row"><span style="color:var(--muted)">EIS</span><span style="font-weight:600">RM 992</span></div>
+    <div class="ot-row" style="border-top:1px solid var(--border);margin-top:4px;padding-top:8px"><span style="font-weight:600">Net payroll</span><span style="font-weight:700;color:var(--teal)">RM 214,448</span></div>
+  </div>
+</div>
+<div class="card">
+  <div class="card-hdr"><span class="card-title" style="color:var(--teal)"><i class="ti ti-brain" aria-hidden="true"></i> DeepSeek AI insights</span><span class="badge badge-te">Live</span></div>
+  <div class="ai-chips">
+    <span class="ai-chip"><i class="ti ti-chart-bar" aria-hidden="true"></i> Analyse OT trends</span>
+    <span class="ai-chip"><i class="ti ti-receipt" aria-hidden="true"></i> Summarise pending claims</span>
+    <span class="ai-chip"><i class="ti ti-calendar" aria-hidden="true"></i> Leave balance alert</span>
+    <span class="ai-chip"><i class="ti ti-file-analytics" aria-hidden="true"></i> Payroll variance report</span>
+    <span class="ai-chip"><i class="ti ti-car" aria-hidden="true"></i> Flag high mileage claims</span>
+    <span class="ai-chip"><i class="ti ti-checklist" aria-hidden="true"></i> Compliance checklist</span>
+  </div>
+</div>`,
+
+/* ── CLAIMS ─────────────────────────────── */
+claims: () => `
+<div class="g2">
+  <div class="card">
+    <div class="card-hdr"><span class="card-title"><i class="ti ti-plus" aria-hidden="true"></i> New field claim</span></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Claim type</label><select class="form-input" id="claim-type"><option>Mileage</option><option>Lodging</option><option>Meals</option><option>Toll / Parking</option><option>Miscellaneous</option></select></div>
+      <div class="form-group"><label class="form-label">Date</label><input type="date" class="form-input" id="claim-date" value="2026-05-16"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">From location</label><input class="form-input" id="claim-from" placeholder="e.g. Shah Alam HQ"></div>
+      <div class="form-group"><label class="form-label">To location</label><input class="form-input" id="claim-to" placeholder="e.g. Johor Bahru client"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Distance (km)</label><input class="form-input" type="number" id="km-in" placeholder="0" oninput="calcClaim()"></div>
+      <div class="form-group"><label class="form-label">Rate (RM/km)</label><input class="form-input" type="number" id="rate-in" value="0.60" step="0.05" oninput="calcClaim()"></div>
+    </div>
+    <div style="background:var(--blue-lt);border-radius:9px;padding:11px 14px;display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+      <span style="font-size:12px;color:var(--navy)">Calculated amount</span>
+      <span style="font-size:18px;font-weight:700;color:var(--blue)" id="claim-amt">RM 0.00</span>
+    </div>
+    <div class="form-group" style="margin-bottom:9px"><label class="form-label">Receipt upload</label><input type="file" class="form-input" style="padding:4px"></div>
+    <div class="form-group" style="margin-bottom:12px"><label class="form-label">Remarks</label><textarea class="form-input" id="claim-remarks" rows="2" placeholder="Purpose of visit, client name..."></textarea></div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-primary" onclick="submitClaim()">Submit claim</button>
+      <button class="btn" onclick="toast('Draft saved.','')">Save draft</button>
+      <button class="btn" style="margin-left:auto;color:var(--teal)"><i class="ti ti-brain" aria-hidden="true"></i> AI review ↗</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-hdr"><span class="card-title"><i class="ti ti-list" aria-hidden="true"></i> My claims history</span></div>
+    <div class="row"><div style="flex:1"><div class="row-name">Mileage · KL → Melaka</div><div class="row-sub">12 May 2026 · 320 km</div></div><div class="row-right"><div class="row-amt">RM 192</div><span class="badge badge-appr">Approved</span></div></div>
+    <div class="row"><div style="flex:1"><div class="row-name">Hotel · Penang (2 nights)</div><div class="row-sub">8–10 May 2026</div></div><div class="row-right"><div class="row-amt">RM 560</div><span class="badge badge-pend">Pending</span></div></div>
+    <div class="row"><div style="flex:1"><div class="row-name">Meals · Client entertainment</div><div class="row-sub">7 May 2026</div></div><div class="row-right"><div class="row-amt">RM 145</div><span class="badge badge-appr">Approved</span></div></div>
+    <div class="row"><div style="flex:1"><div class="row-name">Toll + Parking</div><div class="row-sub">5 May 2026</div></div><div class="row-right"><div class="row-amt">RM 38</div><span class="badge badge-appr">Approved</span></div></div>
+    <div class="row"><div style="flex:1"><div class="row-name">Mileage · KL → Seremban</div><div class="row-sub">2 May 2026 · 160 km</div></div><div class="row-right"><div class="row-amt">RM 96</div><span class="badge badge-reje">Rejected</span></div></div>
+    <div style="margin-top:12px;background:var(--bg);border-radius:9px;padding:12px 14px;border:1px solid var(--border)">
+      <div style="font-size:11px;color:var(--muted);margin-bottom:3px">Month-to-date total</div>
+      <div style="font-size:20px;font-weight:700;color:var(--blue)">RM 1,031</div>
+    </div>
+  </div>
+</div>`,
+
+/* ── OVERTIME ───────────────────────────── */
+overtime: () => `
+<div class="callout callout-blue">
+  <i class="ti ti-info-circle" aria-hidden="true"></i>
+  EA 1955 s60A: OT rate = Monthly Salary ÷ 26 ÷ 8 × multiplier. Cap: 104 hrs/month. Wage ceiling applies at RM 4,000/month.
+</div>
+<div class="g2">
+  <div class="card">
+    <div class="card-hdr"><span class="card-title"><i class="ti ti-calculator" aria-hidden="true"></i> OT calculator — EA 1955 s60A</span></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Basic monthly salary (RM)</label><input class="form-input" type="number" id="ot-sal" value="3500" oninput="calcOT()"></div>
+      <div class="form-group"><label class="form-label">OT hours</label><input class="form-input" type="number" id="ot-hrs" value="10" oninput="calcOT()"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Day type</label><select class="form-input" id="ot-type" onchange="calcOT()"><option value="1.5">Normal workday (×1.5)</option><option value="2.0">Rest day (×2.0)</option><option value="3.0">Public holiday (×3.0)</option></select></div>
+      <div class="form-group"><label class="form-label">Working days/month</label><input class="form-input" type="number" id="ot-days" value="26" oninput="calcOT()"></div>
+    </div>
+    <div class="ot-result">
+      <div class="ot-row"><span style="color:var(--muted)">Hourly rate (÷26÷8)</span><span style="font-weight:600" id="ot-hr">RM 16.83</span></div>
+      <div class="ot-row"><span style="color:var(--muted)">OT multiplier</span><span style="font-weight:600" id="ot-mult">×1.5</span></div>
+      <div class="ot-row"><span style="color:var(--muted)">OT rate per hour</span><span style="font-weight:600" id="ot-rate-hr">RM 25.24</span></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding-top:10px;margin-top:6px;border-top:1px solid var(--border)">
+        <span style="font-weight:600">Total OT pay</span>
+        <span style="font-size:22px;font-weight:700;color:var(--blue)" id="ot-total">RM 252.40</span>
+      </div>
+    </div>
+    <div class="callout callout-amber" style="margin-top:12px;margin-bottom:0">
+      <i class="ti ti-alert-triangle" aria-hidden="true"></i>
+      EA 1955: Maximum 104 hours OT per month. Rate capped for salary above RM 4,000.
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-hdr"><span class="card-title"><i class="ti ti-clock-bolt" aria-hidden="true"></i> Team OT log — May 2026</span></div>
+    <div class="row"><div class="row-av" style="background:#EEEDFE;color:#3C3489">FH</div><div style="flex:1"><div class="row-name">Faizal Hashim</div><div class="row-sub">Field Tech</div></div><div style="text-align:right"><div class="row-amt">30 hrs</div><span class="badge badge-ot">RM 855</span></div></div>
+    <div class="row"><div class="row-av" style="background:#EEEDFE;color:#3C3489">JT</div><div style="flex:1"><div class="row-name">Jason Tan</div><div class="row-sub">Service Eng.</div></div><div style="text-align:right"><div class="row-amt">18 hrs</div><span class="badge badge-ot">RM 756</span></div></div>
+    <div class="row"><div class="row-av" style="background:#EEEDFE;color:#3C3489">RA</div><div style="flex:1"><div class="row-name">Rashid Abdullah</div><div class="row-sub">Field Tech</div></div><div style="text-align:right"><div class="row-amt">24 hrs</div><span class="badge badge-ot">RM 604</span></div></div>
+    <div class="row"><div class="row-av" style="background:#EEEDFE;color:#3C3489">KS</div><div style="flex:1"><div class="row-name">Kumari Selvam</div><div class="row-sub">Support</div></div><div style="text-align:right"><div class="row-amt">12 hrs</div><span class="badge badge-ot">RM 378</span></div></div>
+    <div style="margin-top:12px;background:var(--bg);border-radius:9px;padding:12px 14px;border:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
+      <span style="font-size:12px;color:var(--muted)">Team OT payable</span>
+      <span style="font-size:18px;font-weight:700;color:var(--blue)">RM 18,960</span>
+    </div>
+    <button class="btn" style="width:100%;margin-top:10px;color:var(--teal)"><i class="ti ti-brain" aria-hidden="true"></i> AI: Flag OT cap risks ↗</button>
+  </div>
+</div>`,
+
+/* ── LEAVE ──────────────────────────────── */
+leave: () => `
+<div class="g3 mb14">
+  <div class="metric"><div class="metric-lbl">Annual leave</div><div class="metric-val">12 days</div><div class="metric-sub">4 taken · 8 remaining</div></div>
+  <div class="metric"><div class="metric-lbl">Medical leave (MC)</div><div class="metric-val">14 days</div><div class="metric-sub">2 taken · 12 remaining</div></div>
+  <div class="metric"><div class="metric-lbl">Other entitlements</div><div class="metric-val">—</div><div class="metric-sub">Maternity · Paternity · Emergency</div></div>
+</div>
+<div class="g2">
+  <div class="card">
+    <div class="card-hdr"><span class="card-title"><i class="ti ti-calendar-plus" aria-hidden="true"></i> Apply for leave</span></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Leave type</label><select class="form-input" id="leave-type"><option>Annual Leave</option><option>Medical Leave (MC)</option><option>Emergency Leave</option><option>Maternity (60 days)</option><option>Paternity (7 days)</option><option>Unpaid Leave</option><option>Hajj Leave (10 days)</option></select></div>
+      <div class="form-group"><label class="form-label">Half day?</label><select class="form-input" id="leave-half"><option>Full day</option><option>AM half day</option><option>PM half day</option></select></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Start date</label><input type="date" class="form-input" id="leave-start"></div>
+      <div class="form-group"><label class="form-label">End date</label><input type="date" class="form-input" id="leave-end"></div>
+    </div>
+    <div class="form-group" style="margin-bottom:9px"><label class="form-label">Reason</label><textarea class="form-input" id="leave-reason" rows="2" placeholder="Brief reason for leave request..."></textarea></div>
+    <div class="form-group" style="margin-bottom:12px"><label class="form-label">MC certificate (if applicable)</label><input type="file" class="form-input" style="padding:4px"></div>
+    <div style="display:flex;gap:8px"><button class="btn btn-primary" onclick="submitLeave()">Submit application</button><button class="btn" style="color:var(--teal)"><i class="ti ti-brain" aria-hidden="true"></i> Check entitlement ↗</button></div>
+  </div>
+  <div class="card">
+    <div class="card-hdr"><span class="card-title"><i class="ti ti-info-circle" aria-hidden="true"></i> Malaysia leave policy — EA 1955</span></div>
+    <div class="ot-row"><span style="color:var(--muted)">Annual leave (&lt;2 yrs service)</span><span class="badge badge-info">8 days</span></div>
+    <div class="ot-row"><span style="color:var(--muted)">Annual leave (2–5 yrs)</span><span class="badge badge-info">12 days</span></div>
+    <div class="ot-row"><span style="color:var(--muted)">Annual leave (&gt;5 yrs)</span><span class="badge badge-info">16 days</span></div>
+    <div class="ot-row"><span style="color:var(--muted)">Medical leave (&lt;2 yrs)</span><span class="badge badge-info">14 days</span></div>
+    <div class="ot-row"><span style="color:var(--muted)">Medical leave (2–5 yrs)</span><span class="badge badge-info">18 days</span></div>
+    <div class="ot-row"><span style="color:var(--muted)">Medical leave (&gt;5 yrs)</span><span class="badge badge-info">22 days</span></div>
+    <div class="ot-row"><span style="color:var(--muted)">Maternity leave</span><span class="badge badge-info">60 days</span></div>
+    <div class="ot-row"><span style="color:var(--muted)">Paternity leave</span><span class="badge badge-info">7 days</span></div>
+    <div class="callout callout-blue" style="margin-top:10px;margin-bottom:0">
+      <i class="ti ti-shield-check" aria-hidden="true"></i> Compliant with Employment Act 1955 (Amendment 2022)
+    </div>
+  </div>
+</div>`,
+
+/* ── APPROVALS ──────────────────────────── */
+approvals: () => `
+<div class="g4 mb14">
+  <div class="metric"><div class="metric-lbl">Awaiting my action</div><div class="metric-val" style="color:var(--amber)">5</div><div class="metric-sub">Oldest: 3 days</div></div>
+  <div class="metric"><div class="metric-lbl">Approved this month</div><div class="metric-val" style="color:var(--green)">28</div><div class="metric-sub">RM 34,200 value</div></div>
+  <div class="metric"><div class="metric-lbl">Rejected</div><div class="metric-val" style="color:var(--red)">4</div><div class="metric-sub">This month</div></div>
+  <div class="metric"><div class="metric-lbl">Escalated to L3</div><div class="metric-val" style="color:var(--purple)">3</div><div class="metric-sub">Awaiting HOD</div></div>
+</div>
+<div class="card mb14">
+  <div class="card-hdr"><span class="card-title"><i class="ti ti-clock" aria-hidden="true"></i> Pending my approval</span><button class="btn btn-sm" style="color:var(--teal)"><i class="ti ti-brain" aria-hidden="true"></i> AI review all ↗</button></div>
+  ${[
+    {av:'RA',bg:'#B5D4F4',tc:'#0C447C',name:'Rashid Abdullah',desc:'Mileage · KL → JB · 320 km · RM 192',date:'Submitted 13 May'},
+    {av:'LM',bg:'#9FE1CB',tc:'#085041',name:'Lim Mei Ying',desc:'Lodging · Penang 2 nights · RM 560',date:'Submitted 11 May'},
+    {av:'NZ',bg:'#EEEDFE',tc:'#3C3489',name:'Nurul Zahira',desc:'Annual leave · 22–24 May · 3 days',date:'Balance: 8 days'},
+    {av:'FH',bg:'#FAEEDA',tc:'#854F0B',name:'Faizal Hashim',desc:'OT · 14 hrs weekend · RM 588',date:'⚠ Approaching 104h cap'},
+    {av:'KS',bg:'#F4C0D1',tc:'#72243E',name:'Kumari Selvam',desc:'Meals · Client entertainment · RM 145',date:'Submitted 14 May'},
+  ].map((r,i)=>`
+  <div class="row" id="appr-row-${i}">
+    <div class="row-av" style="background:${r.bg};color:${r.tc}">${r.av}</div>
+    <div style="flex:1">
+      <div class="row-name">${r.name}</div>
+      <div class="row-sub">${r.desc} · <span style="color:var(--muted)">${r.date}</span></div>
+      <div class="chain"><span class="chain-badge chain-done">L1 ✓ Supervisor</span><span class="chain-arrow">→</span><span class="chain-badge chain-active">L2 ← You</span></div>
+    </div>
+    <div style="display:flex;gap:6px;align-items:center">
+      <button class="btn btn-sm btn-primary" onclick="approveRow(${i})">Approve</button>
+      <button class="btn btn-sm btn-danger" onclick="rejectRow(${i})">Reject</button>
+      <button class="btn btn-sm" style="color:var(--teal)">AI ↗</button>
+    </div>
+  </div>`).join('')}
+</div>
+<div class="card">
+  <div class="card-hdr"><span class="card-title"><i class="ti ti-bell" aria-hidden="true"></i> Recent notifications</span></div>
+  <div class="row"><div style="width:8px;height:8px;border-radius:50%;background:var(--blue);flex-shrink:0"></div><div style="flex:1;font-size:12px">Ahmad Hafiz's RM 62 toll claim <strong>auto-approved</strong> (below RM 100 L1 threshold)</div><div style="font-size:11px;color:var(--muted)">2h ago</div></div>
+  <div class="row"><div style="width:8px;height:8px;border-radius:50%;background:var(--amber);flex-shrink:0"></div><div style="flex:1;font-size:12px">Jason Tan's RM 2,400 training claim <strong>escalated to L3</strong> — exceeds L2 limit RM 1,500</div><div style="font-size:11px;color:var(--muted)">5h ago</div></div>
+  <div class="row"><div style="width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0"></div><div style="flex:1;font-size:12px">You approved Priya Rajendran's unpaid leave — HR admin notified</div><div style="font-size:11px;color:var(--muted)">Yesterday</div></div>
+  <div class="row"><div style="width:8px;height:8px;border-radius:50%;background:var(--purple);flex-shrink:0"></div><div style="flex:1;font-size:12px">Reminder: Lim Mei Ying lodging claim pending &gt;72 hrs. <strong>Auto-escalates in 24 hrs</strong></div><div style="font-size:11px;color:var(--muted)">Yesterday</div></div>
+</div>`,
+
+/* ── MATRIX ─────────────────────────────── */
+matrix: () => `
+<div class="tab-row">
+  <div class="tab on">Claims</div>
+  <div class="tab">Leave</div>
+  <div class="tab">Overtime</div>
+  <div class="tab">Payroll</div>
+</div>
+<div class="card mb14">
+  <div class="card-hdr"><span class="card-title"><i class="ti ti-receipt" aria-hidden="true"></i> Claims approval matrix</span><button class="btn btn-sm" style="color:var(--teal)"><i class="ti ti-brain" aria-hidden="true"></i> AI suggest ↗</button></div>
+  <div style="overflow-x:auto">
+  <table class="matrix-table">
+    <thead><tr>
+      <th style="width:180px">Claim type / amount</th>
+      <th><span class="badge badge-te">L1 — Supervisor</span></th>
+      <th><span class="badge badge-info">L2 — Manager</span></th>
+      <th><span class="badge badge-ot">L3 — HOD</span></th>
+      <th><span class="badge badge-pend">L4 — Finance Dir.</span></th>
+      <th>SLA</th>
+    </tr></thead>
+    <tbody>
+      <tr><td>Mileage ≤ RM 100</td><td><span class="ck">✓</span> Final</td><td>—</td><td>—</td><td>—</td><td>1 day</td></tr>
+      <tr><td>Mileage RM 101–500</td><td><span class="ck">✓</span> Verify</td><td><span class="ck">✓</span> Final</td><td>—</td><td>—</td><td>2 days</td></tr>
+      <tr><td>Mileage &gt; RM 500</td><td><span class="ck">✓</span> Verify</td><td><span class="ck">✓</span> Recommend</td><td><span class="ck">✓</span> Final</td><td>—</td><td>3 days</td></tr>
+      <tr><td>Lodging ≤ RM 300/night</td><td><span class="ck">✓</span> Verify</td><td><span class="ck">✓</span> Final</td><td>—</td><td>—</td><td>2 days</td></tr>
+      <tr><td>Lodging &gt; RM 300/night</td><td><span class="ck">✓</span> Verify</td><td><span class="ck">✓</span> Recommend</td><td><span class="ck">✓</span> Final</td><td>—</td><td>3 days</td></tr>
+      <tr><td>Meals ≤ RM 80/day</td><td><span class="ck">✓</span> Final</td><td>—</td><td>—</td><td>—</td><td>1 day</td></tr>
+      <tr><td>Toll / Parking (any)</td><td><span class="ck">✓</span> Final</td><td>—</td><td>—</td><td>—</td><td>1 day</td></tr>
+      <tr><td>Any claim &gt; RM 3,000</td><td><span class="ck">✓</span> Verify</td><td><span class="ck">✓</span> Recommend</td><td><span class="ck">✓</span> Recommend</td><td><span class="ck">✓</span> Final</td><td>5 days</td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+<div class="card">
+  <div class="card-hdr"><span class="card-title"><i class="ti ti-settings" aria-hidden="true"></i> Level configuration</span><button class="btn btn-sm btn-primary">Save changes</button></div>
+  <div class="esc-rung"><div class="esc-num" style="background:var(--teal-lt);color:var(--teal)">1</div><div style="flex:1"><div class="esc-role">Level 1 — Direct supervisor / team lead</div><div class="esc-note">First-line · Low-value routine items · Auto-approve below threshold</div></div><select class="form-input" style="width:130px;font-size:11px"><option>≤ RM 100</option><option>≤ RM 200</option></select></div>
+  <div class="esc-rung"><div class="esc-num" style="background:var(--blue-lt);color:var(--blue)">2</div><div style="flex:1"><div class="esc-role">Level 2 — Department manager</div><div class="esc-note">Mid-value claims · Annual leave 4–7 days · Weekend OT</div></div><select class="form-input" style="width:130px;font-size:11px"><option>≤ RM 1,500</option><option>≤ RM 2,000</option></select></div>
+  <div class="esc-rung"><div class="esc-num" style="background:var(--purple-lt);color:var(--purple)">3</div><div style="flex:1"><div class="esc-role">Level 3 — Head of department (HOD)</div><div class="esc-note">High-value claims · Leave &gt;7 days · PH overtime · Unpaid leave</div></div><select class="form-input" style="width:130px;font-size:11px"><option>≤ RM 5,000</option><option>≤ RM 8,000</option></select></div>
+  <div class="esc-rung"><div class="esc-num" style="background:var(--amber-lt);color:var(--amber)">4</div><div style="flex:1"><div class="esc-role">Level 4 — Finance director / COO</div><div class="esc-note">Claims &gt;RM 3,000 · Payroll changes · Bonus approvals</div></div><select class="form-input" style="width:130px;font-size:11px"><option>≤ RM 20,000</option><option>Unlimited</option></select></div>
+  <div class="esc-rung"><div class="esc-num" style="background:var(--gray-50);color:var(--gray-600)">5</div><div style="flex:1"><div class="esc-role">Level 5 — CEO / Board (optional)</div><div class="esc-note">Extraordinary items · Board-reserved approvals</div></div><select class="form-input" style="width:130px;font-size:11px"><option>Enabled</option><option>Disabled</option></select></div>
+</div>`,
+
+/* ── PERFORMANCE ────────────────────────── */
+performance: () => `
+<div class="g5 mb14">
+  <div class="metric"><div class="metric-lbl"><i class="ti ti-chart-arrows" aria-hidden="true"></i> Org avg score</div><div class="metric-val">76<span style="font-size:14px;color:var(--muted)">/100</span></div><div class="metric-sub up">↑ +4 vs Q1</div></div>
+  <div class="metric"><div class="metric-lbl"><i class="ti ti-target" aria-hidden="true"></i> KPI attainment</div><div class="metric-val">82<span style="font-size:14px;color:var(--muted)">%</span></div><div class="metric-sub up">↑ +6% vs Q1</div></div>
+  <div class="metric"><div class="metric-lbl"><i class="ti ti-star" aria-hidden="true"></i> High performers</div><div class="metric-val">23</div><div class="metric-sub">16% of workforce</div></div>
+  <div class="metric"><div class="metric-lbl"><i class="ti ti-alert-triangle" aria-hidden="true"></i> At-risk staff</div><div class="metric-val" style="color:var(--red)">8</div><div class="metric-sub">PIP candidates</div></div>
+  <div class="metric"><div class="metric-lbl"><i class="ti ti-door-exit" aria-hidden="true"></i> Attrition rate</div><div class="metric-val">6.2<span style="font-size:14px;color:var(--muted)">%</span></div><div class="metric-sub dn">↑ +1.1%</div></div>
+</div>
+<div class="g2 mb14">
+  <div class="card">
+    <div class="card-hdr"><span class="card-title"><i class="ti ti-building" aria-hidden="true"></i> Department scores</span><span class="card-link" onclick="nav('talent',null)">Talent matrix ↗</span></div>
+    ${[
+      ['Field Services',88,'var(--blue)'],
+      ['Customer Success',83,'var(--blue)'],
+      ['Technical Support',79,'var(--blue)'],
+      ['Sales',74,'var(--amber)'],
+      ['Operations',71,'var(--amber)'],
+      ['Admin & Finance',68,'var(--red)'],
+    ].map(([n,v,c])=>`
+    <div class="kpi-row"><span class="kpi-lbl">${n}</span><div class="kpi-track"><div class="kpi-fill" style="width:${v}%;background:${c}"></div></div><span class="kpi-val" style="color:${c}">${v}</span></div>`).join('')}
+  </div>
+  <div class="card">
+    <div class="card-hdr"><span class="card-title"><i class="ti ti-users" aria-hidden="true"></i> Score distribution</span></div>
+    <div style="display:flex;align-items:flex-end;gap:8px;height:130px;padding:10px 0 0">
+      ${[['Below',8,'var(--red)'],['Developing',22,'var(--amber)'],['Meeting',61,'var(--blue)'],['Exceeding',34,'var(--green)'],['Outstanding',17,'var(--teal)']].map(([l,v,c])=>`
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">
+        <span style="font-size:11px;font-weight:600;color:${c}">${v}</span>
+        <div style="width:100%;background:${c};border-radius:4px 4px 0 0;height:${Math.round(v*1.8)}px"></div>
+        <span style="font-size:9px;color:var(--muted);text-align:center;line-height:1.2">${l}</span>
+      </div>`).join('')}
+    </div>
+  </div>
+</div>
+<div class="g3">
+  <div class="card">
+    <div class="card-hdr"><span class="card-title"><i class="ti ti-target" aria-hidden="true"></i> Top KPI attainment</span></div>
+    <div class="kpi-row"><span class="kpi-lbl">SLA compliance</span><div class="kpi-track"><div class="kpi-fill" style="width:94%;background:var(--green)"></div></div><span class="kpi-val" style="color:var(--green)">94%</span></div>
+    <div class="kpi-row"><span class="kpi-lbl">Customer CSAT</span><div class="kpi-track"><div class="kpi-fill" style="width:87%;background:var(--blue)"></div></div><span class="kpi-val">87%</span></div>
+    <div class="kpi-row"><span class="kpi-lbl">First-call res.</span><div class="kpi-track"><div class="kpi-fill" style="width:79%;background:var(--blue)"></div></div><span class="kpi-val">79%</span></div>
+    <div class="kpi-row"><span class="kpi-lbl">Revenue target</span><div class="kpi-track"><div class="kpi-fill" style="width:68%;background:var(--red)"></div></div><span class="kpi-val" style="color:var(--red)">68%</span></div>
+  </div>
+  <div class="card">
+    <div class="card-hdr"><span class="card-title"><i class="ti ti-medal" aria-hidden="true"></i> Top performers</span></div>
+    ${[['FH','#9FE1CB','#085041','Faizal Hashim','Field Services',94,'score-great'],['JT','#B5D4F4','#0C447C','Jason Tan','Tech Support',91,'score-great'],['NZ','#EEEDFE','#3C3489','Nurul Zahira','Customer Success',89,'score-good']].map(([av,bg,tc,name,dept,score,cls])=>`
+    <div class="row">
+      <div class="row-av" style="background:${bg};color:${tc}">${av}</div>
+      <div style="flex:1"><div class="row-name">${name}</div><div class="row-sub">${dept}</div></div>
+      <div class="score-ring ${cls}" style="width:38px;height:38px;font-size:13px">${score}</div>
+    </div>`).join('')}
+  </div>
+  <div class="card">
+    <div class="card-hdr"><span class="card-title"><i class="ti ti-alert-triangle" aria-hidden="true"></i> Management alerts</span></div>
+    <div class="row"><div style="width:8px;height:8px;border-radius:50%;background:var(--red);flex-shrink:0"></div><div style="flex:1"><div class="row-name">8 staff on PIP</div><div class="row-sub">Review due 31 May</div></div><button class="btn btn-sm" style="color:var(--teal)">AI ↗</button></div>
+    <div class="row"><div style="width:8px;height:8px;border-radius:50%;background:var(--amber);flex-shrink:0"></div><div style="flex:1"><div class="row-name">Admin dept: 68/100</div><div class="row-sub">Below 70 threshold</div></div><button class="btn btn-sm" style="color:var(--teal)">AI ↗</button></div>
+    <div class="row"><div style="width:8px;height:8px;border-radius:50%;background:var(--amber);flex-shrink:0"></div><div style="flex:1"><div class="row-name">Revenue KPI: 68%</div><div class="row-sub">Sales team lagging</div></div><button class="btn btn-sm" style="color:var(--teal)">AI ↗</button></div>
+    <div class="row"><div style="width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0"></div><div style="flex:1"><div class="row-name">Field Services: 88/100</div><div class="row-sub">Top performing dept</div></div></div>
+  </div>
+</div>`,
+
+/* ── TALENT ─────────────────────────────── */
+talent: () => `
+<div class="card mb14">
+  <div class="card-hdr"><span class="card-title"><i class="ti ti-grid-4x4" aria-hidden="true"></i> 9-box talent matrix — Q2 2026</span><button class="btn btn-sm" style="color:var(--teal)"><i class="ti ti-brain" aria-hidden="true"></i> Succession plan ↗</button></div>
+  <div style="font-size:11px;color:var(--muted);margin-bottom:10px">Y-axis: potential (assessed by manager) · X-axis: performance score</div>
+  <div class="talent-grid">
+    <div class="talent-cell" style="background:var(--amber-lt)"><div class="talent-cell-lbl" style="color:var(--amber)">High pot · Low perf</div><div class="talent-cell-names">Nurul Zahira<br>Rashid Abdullah</div><div class="talent-cell-action" style="color:var(--amber)">→ Coach & develop</div></div>
+    <div class="talent-cell" style="background:var(--green-lt)"><div class="talent-cell-lbl" style="color:var(--green)">High pot · Med perf</div><div class="talent-cell-names">Priya Rajendran<br>Kumari Selvam</div><div class="talent-cell-action" style="color:var(--green)">→ Stretch & accelerate</div></div>
+    <div class="talent-cell star" style="background:var(--green-lt)"><div class="talent-cell-lbl" style="color:var(--green)">High pot · High perf ⭐</div><div class="talent-cell-names">Faizal Hashim<br>Jason Tan</div><div class="talent-cell-action" style="color:var(--blue)">→ Retain & promote</div></div>
+    <div class="talent-cell" style="background:var(--gray-50)"><div class="talent-cell-lbl" style="color:var(--gray-600)">Med pot · Low perf</div><div class="talent-cell-names">Lee Kah Wai<br>Salmah Razak</div><div class="talent-cell-action" style="color:var(--gray-600)">→ Reassess fit</div></div>
+    <div class="talent-cell" style="background:var(--blue-lt)"><div class="talent-cell-lbl" style="color:var(--blue)">Med pot · Med perf</div><div class="talent-cell-names">12 core staff</div><div class="talent-cell-action" style="color:var(--blue)">→ Sustain & recognise</div></div>
+    <div class="talent-cell" style="background:var(--blue-lt)"><div class="talent-cell-lbl" style="color:var(--blue)">Med pot · High perf</div><div class="talent-cell-names">8 staff</div><div class="talent-cell-action" style="color:var(--blue)">→ Deepen expertise</div></div>
+    <div class="talent-cell" style="background:var(--red-lt)"><div class="talent-cell-lbl" style="color:var(--red)">Low pot · Low perf</div><div class="talent-cell-names">Aminah Kadir<br>Rajan Gopal</div><div class="talent-cell-action" style="color:var(--red)">→ PIP / exit manage</div></div>
+    <div class="talent-cell" style="background:var(--gray-50)"><div class="talent-cell-lbl" style="color:var(--gray-600)">Low pot · Med perf</div><div class="talent-cell-names">6 staff</div><div class="talent-cell-action" style="color:var(--gray-600)">→ Maintain role</div></div>
+    <div class="talent-cell" style="background:var(--gray-50)"><div class="talent-cell-lbl" style="color:var(--gray-600)">Low pot · High perf</div><div class="talent-cell-names">3 specialist staff</div><div class="talent-cell-action" style="color:var(--gray-600)">→ Expert track</div></div>
+  </div>
+</div>
+<div class="ai-chips">
+  <span class="ai-chip">Generate succession plan ↗</span>
+  <span class="ai-chip">Promotion nominees ↗</span>
+  <span class="ai-chip">Draft PIP for low performers ↗</span>
+  <span class="ai-chip">Retention plan for high fliers ↗</span>
+</div>`,
+
+/* ── FOREIGN WORKER ─────────────────────── */
+foreign: () => `
+<div class="callout callout-amber mb14">
+  <i class="ti ti-alert-triangle" aria-hidden="true"></i>
+  <strong>2026 policy update:</strong> New EP salary thresholds from 1 Jun 2026 (Cat I: RM 20,000 / Cat II: RM 10,000 / Cat III: RM 5,000). Levy must be paid <em>before</em> VDR issuance. ePASS digital permit mandatory (Mar 2025+). 1:3 expat-to-intern ratio enforced Jan 2026.
+</div>
+<div class="g4 mb14">
+  <div class="metric"><div class="metric-lbl"><i class="ti ti-users" aria-hidden="true"></i> Total FW headcount</div><div class="metric-val">24</div><div class="metric-sub">18 VP(TE) · 6 EP</div></div>
+  <div class="metric"><div class="metric-lbl"><i class="ti ti-id-badge" aria-hidden="true"></i> Active permits</div><div class="metric-val" style="color:var(--green)">21</div><div class="metric-sub">3 pending renewal</div></div>
+  <div class="metric"><div class="metric-lbl"><i class="ti ti-alert-triangle" aria-hidden="true"></i> Expiring ≤90 days</div><div class="metric-val" style="color:var(--amber)">5</div><div class="metric-sub">Action required</div></div>
+  <div class="metric"><div class="metric-lbl"><i class="ti ti-cash" aria-hidden="true"></i> Annual levy paid</div><div class="metric-val">RM 38,400</div><div class="metric-sub">FY 2026</div></div>
+</div>
+<div class="steps mb14">
+  ${[['1','Section 60K','ePPAx 2.0','done'],['2','KDN quota','OSC direct','done'],['3','Pay levy','Before VDR','active'],['4','Agency appoint','JTKSM lic.',''],['5','Pre-dep medical','Src country',''],['6','VDR issued','Immigration',''],['7','Arrival','24h clearance',''],['8','FOMEMA','Within 30 days',''],['9','VP(TE)/PLKS','After FOMEMA',''],['10','i-Kad + ePASS','Digital permit','']].map(([n,l,s,cls])=>`
+  <div class="step ${cls}"><div class="step-num">${n}</div><div class="step-lbl">${l}</div><div class="step-time">${s}</div></div>`).join('')}
+</div>
+<div class="g2">
+  <div class="card">
+    <div class="card-hdr"><span class="card-title"><i class="ti ti-alert-triangle" aria-hidden="true"></i> Compliance alerts</span></div>
+    <div class="row"><div style="width:8px;height:8px;border-radius:50%;background:var(--red);flex-shrink:0"></div><div style="flex:1"><div class="row-name">Ahmad Rizal — PLKS expires 18 days</div><div class="row-sub">VP(TE) · Indonesian · Renew via MYEG</div></div><button class="btn btn-sm btn-teal">Renew</button></div>
+    <div class="row"><div style="width:8px;height:8px;border-radius:50%;background:var(--red);flex-shrink:0"></div><div style="flex:1"><div class="row-name">Ramu Krishnan — FOMEMA overdue</div><div class="row-sub">Year 2 check · 5 days overdue</div></div><button class="btn btn-sm btn-teal">Book</button></div>
+    <div class="row"><div style="width:8px;height:8px;border-radius:50%;background:var(--amber);flex-shrink:0"></div><div style="flex:1"><div class="row-name">Nguyen Van An — Levy payment pending</div><div class="row-sub">Must pay before VDR issuance · 2026 rule</div></div><button class="btn btn-sm">Pay levy</button></div>
+    <div class="row"><div style="width:8px;height:8px;border-radius:50%;background:var(--amber);flex-shrink:0"></div><div style="flex:1"><div class="row-name">Siti Rohani — Security bond claim</div><div class="row-sub">COM filed · RM 1,500 bond refund pending</div></div><button class="btn btn-sm">Track</button></div>
+  </div>
+  <div class="card">
+    <div class="card-hdr"><span class="card-title"><i class="ti ti-globe" aria-hidden="true"></i> Workforce by nationality</span></div>
+    ${[['Indonesia',13,54,'var(--teal)'],['Bangladesh',5,21,'var(--green)'],['Nepal',3,13,'var(--blue)'],['Vietnam',2,8,'var(--purple)'],['Myanmar',1,4,'var(--gray-400)']].map(([n,c,p,cl])=>`
+    <div class="kpi-row"><span class="kpi-lbl">${n}</span><div class="kpi-track"><div class="kpi-fill" style="width:${p}%;background:${cl}"></div></div><span class="kpi-val">${c}</span></div>`).join('')}
+    <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);display:flex;gap:6px;flex-wrap:wrap">
+      <span class="badge badge-te">18 VP(TE)/PLKS</span>
+      <span class="badge badge-info">6 Employment Pass</span>
+    </div>
+  </div>
+</div>`,
+
+/* ── LEVY CALCULATOR ────────────────────── */
+levy: () => `
+<div class="callout callout-amber mb14">
+  <i class="ti ti-alert-triangle" aria-hidden="true"></i>
+  <strong>2026:</strong> Levy must be paid before VDR issuance. Multi-Tier Levy Mechanism (MTLM) expected later 2026. Rates below are indicative — confirm at mohr.gov.my.
+</div>
+<div class="g2">
+  <div class="card">
+    <div class="card-hdr"><span class="card-title"><i class="ti ti-calculator" aria-hidden="true"></i> Annual cost calculator</span></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Sector</label><select class="form-input" id="lev-sec" onchange="calcLevy()"><option value="1850">Services</option><option value="1850">Manufacturing</option><option value="1850">Construction</option><option value="640">Plantation</option><option value="640">Agriculture</option><option value="410">Domestic helper</option></select></div>
+      <div class="form-group"><label class="form-label">Nationality</label><select class="form-input" id="lev-nat" onchange="calcLevy()"><option>Indonesia / Bangladesh</option><option>Nepal / Myanmar / Vietnam</option><option>Philippines</option></select></div>
+    </div>
+    <div class="form-group" style="margin-bottom:12px"><label class="form-label">Number of workers</label><input class="form-input" type="number" id="lev-ct" value="5" min="1" oninput="calcLevy()"></div>
+    <div class="ot-result">
+      <div class="ot-row"><span style="color:var(--muted)">Annual levy per worker</span><span style="font-weight:600" id="l-levy">RM 1,850</span></div>
+      <div class="ot-row"><span style="color:var(--muted)">FOMEMA medical (est.)</span><span style="font-weight:600">RM 180</span></div>
+      <div class="ot-row"><span style="color:var(--muted)">SKHPPA insurance</span><span style="font-weight:600">RM 120</span></div>
+      <div class="ot-row"><span style="color:var(--muted)">SOCSO (employer)</span><span style="font-weight:600">RM 840/yr</span></div>
+      <div style="border-top:1px solid var(--border);margin-top:6px;padding-top:10px;display:flex;justify-content:space-between;align-items:center">
+        <span style="font-weight:600">Total annual cost</span>
+        <span style="font-size:20px;font-weight:700;color:var(--teal)" id="l-total">RM 14,950</span>
+      </div>
+    </div>
+    <button class="btn" style="width:100%;margin-top:10px;color:var(--teal)"><i class="ti ti-brain" aria-hidden="true"></i> MTLM impact analysis ↗</button>
+  </div>
+  <div class="card">
+    <div class="card-hdr"><span class="card-title"><i class="ti ti-table" aria-hidden="true"></i> Levy rates by sector</span></div>
+    <div class="ot-row"><span style="color:var(--muted)">Services</span><span style="font-weight:600">RM 1,850 / yr</span></div>
+    <div class="ot-row"><span style="color:var(--muted)">Manufacturing</span><span style="font-weight:600">RM 1,850 / yr</span></div>
+    <div class="ot-row"><span style="color:var(--muted)">Construction</span><span style="font-weight:600">RM 1,850 / yr</span></div>
+    <div class="ot-row"><span style="color:var(--muted)">Plantation</span><span style="font-weight:600">RM 640 / yr</span></div>
+    <div class="ot-row"><span style="color:var(--muted)">Agriculture</span><span style="font-weight:600">RM 640 / yr</span></div>
+    <div class="ot-row"><span style="color:var(--muted)">Domestic helper</span><span style="font-weight:600">RM 410 / yr</span></div>
+    <div class="divider"></div>
+    <div class="callout callout-blue" style="margin-bottom:0">
+      <i class="ti ti-info-circle" aria-hidden="true"></i>
+      Rates subject to change under MTLM 2026. Verify at <strong>mohr.gov.my</strong> or <strong>imi.gov.my</strong>
+    </div>
+    <div style="margin-top:12px">
+      <div class="card-title" style="margin-bottom:8px"><i class="ti ti-link" aria-hidden="true"></i> Official portals</div>
+      ${[['Immigration Dept (JIM)','imi.gov.my'],['Ministry Home Affairs','moha.gov.my'],['Labour Dept (JTKSM)','jtksm.gov.my'],['Expat Services (ESD)','esd.gov.my'],['FOMEMA','fomema.com.my'],['MYEG renewals','myeg.com.my']].map(([l,u])=>`
+      <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px"><span style="color:var(--muted)">${l}</span><a href="https://www.${u}" style="color:var(--blue)">${u}</a></div>`).join('')}
+    </div>
+  </div>
+</div>`,
+
+/* ── STUB VIEWS ─────────────────────────── */
+employees: () => `
+<div class="callout callout-blue mb14"><i class="ti ti-info-circle" aria-hidden="true"></i> Employee directory with browser storage. Add staff, filter by department, and search by name, role, or employee ID.</div>
+<div class="g2">
+  <div class="card">
+    <div class="card-hdr"><span class="card-title"><i class="ti ti-plus" aria-hidden="true"></i> New employee</span></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Employee ID</label><input id="emp-id" class="form-input" placeholder="E143"></div>
+      <div class="form-group"><label class="form-label">Full name</label><input id="emp-name" class="form-input" placeholder="Aisyah Rahman"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Role</label><input id="emp-role" class="form-input" placeholder="HR Executive"></div>
+      <div class="form-group"><label class="form-label">Department</label><select id="emp-dept" class="form-input"><option>HR</option><option>Field Services</option><option>Tech Support</option><option>Finance</option><option>Sales</option><option>Admin</option></select></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Employment type</label><select id="emp-type" class="form-input"><option>Permanent</option><option>Contract</option><option>EP Cat III</option><option>Intern</option></select></div>
+      <div class="form-group"><label class="form-label">Status</label><select id="emp-status" class="form-input"><option>Active</option><option>On Leave</option><option>Probation</option></select></div>
+    </div>
+    <button class="btn btn-primary" onclick="addEmployee()" style="width:100%"><i class="ti ti-device-floppy"></i> Save employee</button>
+  </div>
+  <div class="card">
+    <div class="card-hdr"><span class="card-title"><i class="ti ti-filter" aria-hidden="true"></i> Search & filter</span></div>
+    <div class="form-group" style="margin-bottom:10px"><label class="form-label">Search</label><input id="emp-search" class="form-input" placeholder="Name, ID, role..." oninput="renderEmployees()"></div>
+    <div class="form-group"><label class="form-label">Department</label><select id="emp-filter-dept" class="form-input" onchange="renderEmployees()"><option value="All">All departments</option><option>HR</option><option>Field Services</option><option>Tech Support</option><option>Finance</option><option>Sales</option><option>Admin</option></select></div>
+    <div class="callout callout-teal" style="margin-top:12px;margin-bottom:0"><i class="ti ti-database"></i> Data is saved in localStorage, so this behaves like a simple web app even after refresh.</div>
+  </div>
+</div>
+<div class="card" style="margin-top:14px">
+  <div class="card-hdr"><span class="card-title"><i class="ti ti-users" aria-hidden="true"></i> Employee roster</span><span id="emp-count" class="badge badge-info">0 employees</span></div>
+  <div id="emp-list"></div>
+</div>`,
+
+payroll: () => `
+<div class="callout callout-green mb14"><i class="ti ti-check" aria-hidden="true"></i> May 2026 payroll ready for review. EPF, SOCSO, EIS, and PCB computed. Pending approval from Finance Director (L4) before processing.</div>
+<div class="g4 mb14">
+  <div class="metric"><div class="metric-lbl">Gross payroll</div><div class="metric-val">RM 248,500</div></div>
+  <div class="metric"><div class="metric-lbl">EPF (employer 12%)</div><div class="metric-val" style="color:var(--amber)">RM 29,820</div></div>
+  <div class="metric"><div class="metric-lbl">SOCSO</div><div class="metric-val" style="color:var(--amber)">RM 3,240</div></div>
+  <div class="metric"><div class="metric-lbl">Net payroll</div><div class="metric-val" style="color:var(--teal)">RM 214,448</div></div>
+</div>
+<div class="card"><div class="card-hdr"><span class="card-title"><i class="ti ti-cash" aria-hidden="true"></i> May 2026 payroll summary</span><div style="display:flex;gap:8px"><button class="btn btn-sm">Export EPF Form A</button><button class="btn btn-sm">Export SOCSO 8A</button><button class="btn btn-primary btn-sm">Submit for approval</button></div></div><div style="text-align:center;padding:40px;color:var(--muted);font-size:13px"><i class="ti ti-file-analytics" style="font-size:32px;display:block;margin-bottom:8px" aria-hidden="true"></i>Payroll detail table — 142 employee payslips ready<br><button class="btn" style="margin-top:10px">Generate all payslips (PDF)</button></div></div>`,
+
+attendance: () => `<div class="callout callout-blue mb14"><i class="ti ti-fingerprint" aria-hidden="true"></i> Attendance module — biometric + GPS clock-in/out for field staff. Live attendance feed, tardiness tracking, and monthly attendance reports.</div><div class="card"><div class="card-hdr"><span class="card-title"><i class="ti ti-fingerprint" aria-hidden="true"></i> Today's attendance</span></div><div style="text-align:center;padding:40px;color:var(--muted)"><i class="ti ti-fingerprint" style="font-size:40px;display:block;margin-bottom:8px;color:var(--teal)" aria-hidden="true"></i><div style="font-size:24px;font-weight:700;color:var(--green)">132 / 142</div><div style="font-size:13px">Staff clocked in today · 10 on approved leave</div></div></div>`,
+
+mileage: () => `<div class="callout callout-teal mb14"><i class="ti ti-car" aria-hidden="true"></i> Mileage tracker — GPS-verified routes, auto-calculated claims at RM 0.60/km. Field staff submit via mobile app; route is verified against Google Maps before claim is raised.</div><div class="g3 mb14"><div class="metric"><div class="metric-lbl">May claims total</div><div class="metric-val">2,840 km</div></div><div class="metric"><div class="metric-lbl">RM value</div><div class="metric-val" style="color:var(--blue)">RM 1,704</div></div><div class="metric"><div class="metric-lbl">Active field staff</div><div class="metric-val">24</div></div></div>`,
+};
+
+/* ─────────────────────────────────────────
+   NAVIGATION
+───────────────────────────────────────── */
+function nav(id, el) {
+  document.getElementById('page-title').textContent = titles[id] || id;
+  document.getElementById('content').innerHTML = `<div class="view">${(views[id]||(()=>`<div class="callout callout-blue"><i class="ti ti-info-circle"></i> ${titles[id]} — module coming soon.</div>`))()}</div>`;
+  document.querySelectorAll('.sb-item').forEach(n=>n.classList.remove('active'));
+  if (el) { el.classList.add('active'); }
+  else {
+    document.querySelectorAll('.sb-item').forEach(n=>{
+      if(n.dataset.view === id) n.classList.add('active');
+    });
+  }
+  if(id==='overtime') calcOT();
+  if(id==='claims') calcClaim();
+  if(id==='levy') calcLevy();
+  if(id==='employees') renderEmployees();
+
+  const sidebar = document.getElementById('sidebar');
+  if (sidebar && window.innerWidth <= 768) sidebar.classList.remove('open');
+}
+
+/* ─────────────────────────────────────────
+   CALCULATORS
+───────────────────────────────────────── */
+function calcOT() {
+  const sal = parseFloat(document.getElementById('ot-sal')?.value)||3500;
+  const hrs = parseFloat(document.getElementById('ot-hrs')?.value)||0;
+  const mult = parseFloat(document.getElementById('ot-type')?.value)||1.5;
+  const days = parseFloat(document.getElementById('ot-days')?.value)||26;
+  const hr = sal/days/8;
+  const otHr = hr*mult;
+  const total = otHr*hrs;
+  const $ = id=>document.getElementById(id);
+  if($('ot-hr')) $('ot-hr').textContent='RM '+hr.toFixed(2);
+  if($('ot-mult')) $('ot-mult').textContent='×'+mult.toFixed(1);
+  if($('ot-rate-hr')) $('ot-rate-hr').textContent='RM '+otHr.toFixed(2);
+  if($('ot-total')) $('ot-total').textContent='RM '+total.toFixed(2);
+}
+
+function calcClaim() {
+  const km = parseFloat(document.getElementById('km-in')?.value)||0;
+  const rate = parseFloat(document.getElementById('rate-in')?.value)||0.60;
+  const el = document.getElementById('claim-amt');
+  if(el) el.textContent='RM '+(km*rate).toFixed(2);
+}
+
+function calcLevy() {
+  const sel = document.getElementById('lev-sec');
+  const levyRate = sel ? parseInt(sel.value)||1850 : 1850;
+  const ct = Math.max(1,parseInt(document.getElementById('lev-ct')?.value)||1);
+  const perW = levyRate+180+120+840;
+  const total = perW*ct;
+  const l = document.getElementById('l-levy');
+  const t = document.getElementById('l-total');
+  if(l) l.textContent='RM '+levyRate.toLocaleString();
+  if(t) t.textContent='RM '+total.toLocaleString();
+}
+
+/* ─────────────────────────────────────────
+   FORM SUBMIT HANDLERS
+───────────────────────────────────────── */
+function submitClaim() {
+  const type = document.getElementById('claim-type')?.value;
+  const from = document.getElementById('claim-from')?.value;
+  const to = document.getElementById('claim-to')?.value;
+  const km = document.getElementById('km-in')?.value;
+  const rate = document.getElementById('rate-in')?.value;
+  if (!from || !to || !km || parseFloat(km)<=0) {
+    toast('Please fill in locations and a valid distance.', 'error');
+    return;
+  }
+  toast(`Claim submitted: ${from} → ${to} (${km} km @ RM ${rate})`, 'success');
+  document.getElementById('km-in').value = '0';
+  calcClaim();
+}
+
+function submitLeave() {
+  const type = document.getElementById('leave-type')?.value;
+  const start = document.getElementById('leave-start')?.value;
+  const end = document.getElementById('leave-end')?.value;
+  const reason = document.getElementById('leave-reason')?.value;
+  if (!start || !end) {
+    toast('Please select start and end dates.', 'error');
+    return;
+  }
+  if (start > end) {
+    toast('End date must be after start date.', 'error');
+    return;
+  }
+  toast(`Leave submitted: ${type} (${start} → ${end})`, 'success');
+  document.getElementById('leave-start').value = '';
+  document.getElementById('leave-end').value = '';
+  document.getElementById('leave-reason').value = '';
+}
+
+/* ─────────────────────────────────────────
+   APPROVAL ACTIONS
+───────────────────────────────────────── */
+function approveRow(i) {
+  const row = document.getElementById(`appr-row-${i}`);
+  if(!row) return;
+  const last = row.querySelector('div:last-child');
+  if(last) last.innerHTML='<span class="badge badge-appr"><i class="ti ti-check"></i> Approved</span>';
+  toast('Request approved.', 'success');
+}
+function rejectRow(i) {
+  const row = document.getElementById(`appr-row-${i}`);
+  if(!row) return;
+  const last = row.querySelector('div:last-child');
+  if(last) last.innerHTML='<span class="badge badge-reje"><i class="ti ti-x"></i> Rejected</span>';
+  toast('Request rejected.', 'success');
+}
+
+
+const defaultEmployees = [
+  {id:'E138',name:'Faizal Hashim',role:'Field Tech',dept:'Field Services',type:'Permanent',status:'Active'},
+  {id:'E139',name:'Jason Tan',role:'Service Engineer',dept:'Tech Support',type:'Permanent',status:'Active'},
+  {id:'E140',name:'Nurul Zahira',role:'CS Specialist',dept:'Sales',type:'Permanent',status:'Active'},
+  {id:'E141',name:'Rashid Abdullah',role:'Field Tech',dept:'Field Services',type:'Contract',status:'Active'},
+  {id:'E142',name:'Ramu a/l Krishnan',role:'Support Exec',dept:'Tech Support',type:'EP Cat III',status:'Probation'}
+];
+function getEmployees(){
+  try {
+    const raw = localStorage.getItem('myhrm_employees');
+    if (!raw) return [...defaultEmployees];
+    return JSON.parse(raw) || [...defaultEmployees];
+  } catch {
+    return [...defaultEmployees];
+  }
+}
+function saveEmployees(list){ localStorage.setItem('myhrm_employees', JSON.stringify(list)); }
+function initials(name){ return name.split(/\s+/).slice(0,2).map(v=>v[0]||'').join('').toUpperCase(); }
+function renderEmployees(){
+  const listEl = document.getElementById('emp-list');
+  if(!listEl) return;
+  const q = (document.getElementById('emp-search')?.value||'').toLowerCase();
+  const dept = document.getElementById('emp-filter-dept')?.value || 'All';
+  const all = getEmployees();
+  const filtered = all.filter(e => (dept==='All' || e.dept===dept) && `${e.id} ${e.name} ${e.role}`.toLowerCase().includes(q));
+  document.getElementById('emp-count').textContent = `${filtered.length} employees`;
+  listEl.innerHTML = filtered.map(e=>`<div class="row"><div class="row-av" style="background:var(--blue-lt);color:var(--blue)">${initials(e.name)}</div><div style="flex:1"><div class="row-name">${e.name} <span style="font-size:11px;color:var(--muted)">(${e.id})</span></div><div class="row-sub">${e.role} · ${e.dept}</div></div><span class="badge badge-info">${e.type}</span><span class="badge ${e.status==='Active'?'badge-appr':'badge-pend'}" style="margin-left:6px">${e.status}</span><button class="btn btn-sm btn-danger" style="margin-left:10px" onclick="removeEmployee('${e.id}')">Remove</button></div>`).join('') || '<div class="callout callout-amber">No employees matched your filters.</div>';
+}
+function addEmployee(){
+  const id = document.getElementById('emp-id')?.value.trim();
+  const name = document.getElementById('emp-name')?.value.trim();
+  const role = document.getElementById('emp-role')?.value.trim();
+  const dept = document.getElementById('emp-dept')?.value;
+  const type = document.getElementById('emp-type')?.value;
+  const status = document.getElementById('emp-status')?.value;
+  if(!id || !name || !role){ toast('Please fill employee ID, full name, and role.', 'error'); return; }
+  const list = getEmployees();
+  if(list.some(e=>e.id.toLowerCase()===id.toLowerCase())){ toast('Employee ID already exists.', 'error'); return; }
+  list.push({id,name,role,dept,type,status});
+  saveEmployees(list);
+  ['emp-id','emp-name','emp-role'].forEach(k=>document.getElementById(k).value='');
+  renderEmployees();
+  toast(`Employee ${name} (${id}) saved.`, 'success');
+}
+function removeEmployee(id){
+  if(!confirm(`Remove employee ${id}?`)) return;
+  const list = getEmployees();
+  const idx = list.findIndex(e => e.id === id);
+  if(idx === -1) return;
+  list.splice(idx, 1);
+  saveEmployees(list);
+  renderEmployees();
+  toast('Employee removed.', '');
+}
+
+/* ─────────────────────────────────────────
+   INIT
+───────────────────────────────────────── */
+if(!localStorage.getItem('myhrm_employees')) saveEmployees(defaultEmployees);
+nav('dashboard', document.querySelector('.sb-item.active'));
+</script>
+</body>
+</html>

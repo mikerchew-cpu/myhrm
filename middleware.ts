@@ -5,14 +5,9 @@ import { jwtVerify } from "jose";
 const SECRET = new TextEncoder().encode(process.env.JWT_SECRET || "myhrm-dev-secret-change-in-production");
 
 const PUBLIC_ROUTES = ["/login", "/api/auth/login"];
-const STATIC_ASSETS = /\.(jpg|jpeg|png|gif|svg|css|js|ico|woff2?)$/;
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
-
-  if (STATIC_ASSETS.test(pathname) || pathname.startsWith("/_next") || pathname.startsWith("/api/")) {
-    return NextResponse.next();
-  }
 
   if (PUBLIC_ROUTES.includes(pathname)) {
     return NextResponse.next();
@@ -33,5 +28,7 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
+  matcher: [
+    "/((?!_next/static|_next/image|favicon\\.ico|api/|\\.(?:jpg|jpeg|png|gif|svg|css|js|ico|woff2?)$).*)",
+  ],
 };

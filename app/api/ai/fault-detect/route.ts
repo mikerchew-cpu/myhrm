@@ -25,8 +25,12 @@ export async function GET() {
       orderBy: [{ year: "desc" }, { month: "desc" }],
     });
     
-    const currentMonth = payrollRecords.filter(p => p.month === 5 && p.year === 2026);
-    const prevMonth = payrollRecords.filter(p => p.month === 4 && p.year === 2026);
+    const currentMonth = payrollRecords.filter(p => p.month === now.getMonth() + 1 && p.year === now.getFullYear());
+    const prevMonth = payrollRecords.filter(p => {
+      const d = new Date(p.year, p.month - 1);
+      d.setMonth(d.getMonth() - 1);
+      return d.getMonth() + 1 === now.getMonth() + 1 && d.getFullYear() === now.getFullYear();
+    });
     
     for (const curr of currentMonth) {
       const prev = prevMonth.find(p => p.employeeId === curr.employeeId);

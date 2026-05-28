@@ -7,7 +7,7 @@ export async function GET() {
     const now = new Date();
     const [employees, pendingClaims, claimsAll, pendingLeave, leaveAll, otLogs, approvalsAll,
       payrollMonths, mileageAll, performanceAll, fwAll, levyAll, jobs, applicants, interviews,
-      documents, trainingAll, assetsAll, announcements,
+      documentsExpiring, trainingAll, assetsAll, announcements,
     ] = await Promise.all([
       prisma.employee.findMany(),
       prisma.claim.findMany({ where: { status: "Pending" }, orderBy: { createdAt: "desc" }, take: 5, include: { employee: { select: { name: true } } } }),
@@ -29,6 +29,13 @@ export async function GET() {
       prisma.asset.findMany(),
       prisma.announcement.findMany({ orderBy: { createdAt: "desc" }, take: 3, where: { status: { not: "Expired" } } }),
     ]);
+
+    const [payrollAgg] = payrollMonths.length > 0
+      ? await Promise.all([prisma.payrollRecord.aggregate({
+          _sum: { epf: true, socso: true, eis: true },
+          where: { month: payrollMonths[0].month, year: payrollMonths[0].year },
+        })])
+      : [{ _sum: { epf: null, socso: null, eis: null } }];
 
     const totalEmployees = employees.length;
     const activeEmployees = employees.filter(e => e.status === "Active").length;
@@ -58,9 +65,9 @@ export async function GET() {
     const currentPayroll = payrollMonths.length > 0 ? payrollMonths[0]._sum : { gross: 0, net: 0 };
     const gross = currentPayroll.gross ?? 0;
     const net = currentPayroll.net ?? 0;
-    const epf = await prisma.payrollRecord.aggregate({ _sum: { epf: true }, where: { month: payrollMonths[0]?.month ?? 5, year: payrollMonths[0]?.year ?? 2026 } });
-    const socso = await prisma.payrollRecord.aggregate({ _sum: { socso: true }, where: { month: payrollMonths[0]?.month ?? 5, year: payrollMonths[0]?.year ?? 2026 } });
-    const eis = await prisma.payrollRecord.aggregate({ _sum: { eis: true }, where: { month: payrollMonths[0]?.month ?? 5, year: payrollMonths[0]?.year ?? 2026 } });
+    const epf = payrollAgg._sum.epf ?? 0;
+    const socso = payrollAgg._sum.socso ?? 0;
+    const eis = payrollAgg._sum.eis ?? 0;
 
     const payrollTrend = payrollMonths.map(p => ({ month: p.month, year: p.year, gross: p._sum.gross ?? 0, net: p._sum.net ?? 0 }));
 
@@ -98,22 +105,16 @@ export async function GET() {
       otHours: Math.round(otHours), otAccrued: Math.round(otAccrued),
       otDayTypes: Object.entries(otDayTypes).map(([dayType, hours]) => ({ dayType, hours: Math.round(hours) })),
       approvalsAwaiting, approvalsApproved, approvalsRejected,
-      payrollGross: gross, payrollEpf: epf._sum.epf ?? 0, payrollSocso: socso._sum.socso ?? 0, payrollEis: eis._sum.eis ?? 0, payrollNet: net,
+      payrollGross: gross, payrollEpf: epf, payrollSocso: socso, payrollEis: eis, payrollNet: net,
       payrollTrend,
       mileageKm: Math.round(mileageKm), mileageValue: Math.round(mileageValue * 100) / 100,
       orgAvgScore: avgScore, kpiAttainment: kpiAttain, highPerformers, atRiskStaff: atRisk, attritionRate: 6.2,
       levyPaid: levyTotal, fwHeadcount: fwCount, fwExpiringSoon,
       activeJobs, totalApplicants, upcomingInterviews,
-      documentsExpiringSoon: 0, upcomingTraining, totalAssets, totalAssetValue,
+      documentsExpiringSoon: documentsExpiring, upcomingTraining, totalAssets, totalAssetValue,
       trainingCompleted, trainingInProgress,
       recentAnnouncements,
     };
-
-    // Fix documents expiring (need separate query due to Date filter)
-    const docsExpiring = await prisma.document.count({
-      where: { expiryDate: { lte: new Date(now.getTime() + 90 * 86400000), gte: now }, status: "Active" },
-    });
-    stats.documentsExpiringSoon = docsExpiring;
 
     return NextResponse.json({ success: true, data: stats } satisfies ApiResponse<DashboardStats>);
   } catch (error) {

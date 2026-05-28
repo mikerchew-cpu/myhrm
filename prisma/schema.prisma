@@ -71,6 +71,10 @@ model Claim {
   status      String   @default("Pending")
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  @@index([employeeId])
+  @@index([status])
+  @@index([createdAt])
 }
 
 model LeaveRequest {
@@ -86,6 +90,10 @@ model LeaveRequest {
   status    String   @default("Pending")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([employeeId])
+  @@index([status])
+  @@index([startDate])
 }
 
 model OvertimeLog {
@@ -101,6 +109,9 @@ model OvertimeLog {
   status     String   @default("Pending")
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+
+  @@index([employeeId])
+  @@index([dayType])
 }
 
 model Attendance {
@@ -113,6 +124,9 @@ model Attendance {
   status     String   @default("Present")
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+
+  @@index([employeeId])
+  @@index([status])
 }
 
 model MileageRecord {
@@ -127,6 +141,9 @@ model MileageRecord {
   status      String   @default("Pending")
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  @@index([employeeId])
+  @@index([status])
 }
 
 model Approval {
@@ -140,6 +157,9 @@ model Approval {
   comment     String   @default("")
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  @@index([employeeId])
+  @@index([status])
 }
 
 model Performance {
@@ -151,6 +171,8 @@ model Performance {
   year       Int      @default(2026)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+
+  @@index([year, quarter])
 }
 
 model ForeignWorker {
@@ -165,6 +187,8 @@ model ForeignWorker {
   securityBond  Float    @default(0)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+
+  @@index([permitExpiry])
 }
 
 model LevyRecord {
@@ -201,6 +225,9 @@ model PayrollRecord {
   status     String   @default("Draft")
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+
+  @@index([employeeId])
+  @@index([month, year])
 }
 
 model JobPosting {
@@ -219,6 +246,8 @@ model JobPosting {
   updatedAt    DateTime      @updatedAt
   applicants   Applicant[]
   interviews   Interview[]
+
+  @@index([status])
 }
 
 model Applicant {
@@ -239,6 +268,9 @@ model Applicant {
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
   interviews   Interview[]
+
+  @@index([jobPostingId])
+  @@index([status])
 }
 
 model Interview {
@@ -257,6 +289,9 @@ model Interview {
   status       String        @default("Scheduled")
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
+
+  @@index([applicantId])
+  @@index([jobPostingId])
 }
 
 model Document {
@@ -272,6 +307,9 @@ model Document {
   notes       String    @default("")
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+
+  @@index([expiryDate])
+  @@index([status])
 }
 
 model ESubmission {

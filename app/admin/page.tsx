@@ -29,12 +29,13 @@ const departments = ['', 'HR', 'Field Services', 'Tech Support', 'Finance', 'Sal
 const levelOptions = [1, 2, 3, 4, 5];
 const levelLabels = ['Staff', 'Supervisor', 'Manager', 'Director', 'CEO'];
 
-const AI_PROVIDERS = ['deepseek', 'gemini', 'claude'];
-const AI_LABELS: Record<string, string> = { deepseek: 'DeepSeek', gemini: 'Gemini', claude: 'Claude' };
-const AI_ICONS: Record<string, string> = { deepseek: 'brain', gemini: 'sparkles', claude: 'flame' };
+const AI_PROVIDERS = ['deepseek', 'gemini', 'qwen', 'claude'];
+const AI_LABELS: Record<string, string> = { deepseek: 'DeepSeek', gemini: 'Gemini', qwen: 'Qwen', claude: 'Claude' };
+const AI_ICONS: Record<string, string> = { deepseek: 'brain', gemini: 'sparkles', qwen: 'cloud', claude: 'flame' };
 const AI_ENDPOINTS: Record<string, string> = {
   deepseek: 'https://api.deepseek.com/v1/chat/completions',
   gemini: 'https://generativelanguage.googleapis.com/v1beta/models',
+  qwen: 'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions',
   claude: 'https://api.anthropic.com/v1/messages',
 };
 

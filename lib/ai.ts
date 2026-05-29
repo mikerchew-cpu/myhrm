@@ -7,6 +7,7 @@ const PROVIDER_CONFIGS: Record<string, { baseEndpoint: string; model: string }> 
   deepseek: { baseEndpoint: "https://api.deepseek.com/v1/chat/completions", model: "deepseek-chat" },
   gemini: { baseEndpoint: "https://generativelanguage.googleapis.com/v1beta/models", model: "gemini-3.5-flash" },
   claude: { baseEndpoint: "https://api.anthropic.com/v1/messages", model: "claude-sonnet-4-20250514" },
+  qwen: { baseEndpoint: "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions", model: "qwen-plus" },
 };
 
 export async function callAi(

@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 const sections: { label: string; items: { label: string; href: string; icon: string; badge?: { text: string; cls: string } }[] }[] = [
   {
@@ -69,6 +70,7 @@ const sections: { label: string; items: { label: string; href: string; icon: str
     label: 'AI Intelligence',
     items: [
       { label: 'Ask AI', href: '/ask-ai', icon: 'message-chatbot' },
+      { label: 'AI Providers', href: '/ai-providers', icon: 'cloud' },
       { label: 'Fault Detection', href: '/fault-detect', icon: 'shield-search' },
     ],
   },
@@ -83,6 +85,21 @@ const sections: { label: string; items: { label: string; href: string; icon: str
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const [aiStatus, setAiStatus] = useState<{ connected: boolean; label: string }>({ connected: false, label: '' });
+
+  useEffect(() => {
+    fetch('/api/settings/ai')
+      .then(r => r.json())
+      .then(res => {
+        if (res.success) {
+          const enabled = res.data.find((p: { enabled: boolean; apiKey: string; provider: string }) => p.enabled && p.apiKey);
+          if (enabled) {
+            setAiStatus({ connected: true, label: enabled.provider.charAt(0).toUpperCase() + enabled.provider.slice(1) });
+          }
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   const isActive = (href: string) => {
     if (href === '/') return pathname === '/';
@@ -129,13 +146,15 @@ export default function Sidebar() {
       ))}
 
       <div className="sb-footer">
-        <div className="ai-pill">
-          <div className="ai-dot"></div>
-          <div>
-            <div className="ai-lbl"><i className="ti ti-brain" aria-hidden="true"></i> DeepSeek AI</div>
-            <div className="ai-sub">Connected · Ready</div>
+        <Link href="/ai-providers" style={{ textDecoration: 'none' }}>
+          <div className="ai-pill" style={{ cursor: 'pointer' }}>
+            <div className="ai-dot" style={{ background: aiStatus.connected ? 'var(--green)' : 'var(--gray-400)' }}></div>
+            <div>
+              <div className="ai-lbl"><i className="ti ti-brain" aria-hidden="true"></i> {aiStatus.label || 'AI'} {aiStatus.connected ? '' : ''}</div>
+              <div className="ai-sub">{aiStatus.connected ? 'Connected · Ready' : 'Not configured'}</div>
+            </div>
           </div>
-        </div>
+        </Link>
       </div>
     </nav>
     </>
